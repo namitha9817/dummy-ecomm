@@ -386,7 +386,7 @@ function navigateTo(page, data = {}) {
 
 // ── Nav & Header ─────────────────────────────────────────────
 function renderNav() {
-  const navLinks = [
+  const leftLinks = [
     { label: 'Home',          page: 'home' },
     { label: 'About Us',      page: 'about' },
     { label: 'Digital Card',  page: 'digital' },
@@ -395,10 +395,7 @@ function renderNav() {
     { label: 'Crypto',        page: 'crypto' },
     { label: 'Recharge',      page: 'recharge' },
     { label: 'Entertainment', page: 'entertainment' },
-    { label: 'Contact Us',    page: 'contact' },
-    { label: '📋 My Orders',  page: 'orders' },
   ];
-
 
   const rightLinks = [
     { label: 'Contact Us', page: 'contact' },
