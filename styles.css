@@ -2331,6 +2331,29 @@ textarea.form-control {
 }
 .operator-btn:hover { background: #d63050; }
 
+/* ── Nav spacer — pushes Contact Us & Orders to the right ── */
+.nav-spacer {
+  flex: 1;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Form validation errors ── */
+.field-error {
+  color: #e74c3c;
+  font-size: 11px;
+  min-height: 16px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+.form-control.light:focus {
+  outline: none;
+  border-color: #f84464;
+  box-shadow: 0 0 0 3px rgba(248,68,100,0.1);
+}
+
 /* ── Operator pills (recharge page) ── */
 .operator-pill {
   display: flex;
