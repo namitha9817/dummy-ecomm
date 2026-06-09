@@ -2,6 +2,47 @@
 // SOUKSNAP — Main JavaScript
 // ============================================================
 
+// ============================================================
+// LOCAL STORAGE HELPERS
+// ============================================================
+
+const LS = {
+  // ── Users ────────────────────────────────────────────────
+  getUsers() {
+    return JSON.parse(localStorage.getItem('nexcards_users') || '[]');
+  },
+  saveUser(user) {
+    const users = LS.getUsers();
+    const idx   = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
+    if (idx > -1) users[idx] = user; else users.push(user);
+    localStorage.setItem('nexcards_users', JSON.stringify(users));
+  },
+  findUser(email) {
+    return LS.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
+  },
+
+  // ── Session ──────────────────────────────────────────────
+  saveSession(user) {
+    localStorage.setItem('nexcards_session', JSON.stringify({ name: user.name, email: user.email }));
+  },
+  getSession() {
+    try { return JSON.parse(localStorage.getItem('nexcards_session')); } catch { return null; }
+  },
+  clearSession() {
+    localStorage.removeItem('nexcards_session');
+  },
+
+  // ── Orders per user ──────────────────────────────────────
+  getOrders(email) {
+    return JSON.parse(localStorage.getItem(`nexcards_orders_${email.toLowerCase()}`) || '[]');
+  },
+  saveOrder(email, order) {
+    const orders = LS.getOrders(email);
+    orders.unshift({ ...order, date: order.date || new Date().toISOString() });
+    localStorage.setItem(`nexcards_orders_${email.toLowerCase()}`, JSON.stringify(orders));
+  }
+};
+
 // ── State ───────────────────────────────────────────────────
 const state = {
   currentPage: 'home',
