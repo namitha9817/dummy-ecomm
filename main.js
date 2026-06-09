@@ -1843,70 +1843,11 @@ function renderTopupConfirmation(result, op, phone, amount) {
 // ORDER HISTORY PAGE
 // ============================================================
 
-async function renderOrderHistory() {
+function renderOrderHistory() {
   const main = document.getElementById('main-content');
 
-  // Show loading state first
-  main.innerHTML = `
-    <div class="cart-page">
-      <div class="container py-5">
-        <h1 style="font-weight:700;margin-bottom:4px;">My <span style="color:#f84464;">Orders</span></h1>
-        <p style="color:#888;margin-bottom:32px;">Your recent gift card & recharge orders</p>
-        <div class="rl-loading" style="justify-content:center;padding:40px;">
-          <span class="rl-spinner"></span> Fetching order history from Reloadly…
-        </div>
-      </div>
-    </div>`;
-
-  // Fetch from both APIs in parallel
-  let gcOrders   = [];
-  let atOrders   = [];
-
-  try {
-    const [gcData, atData] = await Promise.allSettled([
-      api.get('/giftcards/transactions?size=20'),
-      api.get('/airtime/transactions?size=20')
-    ]);
-
-    if (gcData.status === 'fulfilled') {
-      gcOrders = (gcData.value.content || []).map(o => ({
-        type:          'giftcard',
-        transactionId: o.transactionId,
-        productName:   o.product?.productName || 'Gift Card',
-        img:           o.product?.logoUrls?.[0] || '',
-        amount:        o.amount || 0,
-        currency:      o.currencyCode || 'USD',
-        status:        o.status,
-        date:          o.transactionDate || o.date
-      }));
-    }
-
-    if (atData.status === 'fulfilled') {
-      atOrders = (atData.value.content || []).map(o => ({
-        type:          'airtime',
-        transactionId: o.transactionId,
-        productName:   `${o.operatorName || 'Mobile'} — ${o.recipientPhone || ''}`,
-        img:           '',
-        amount:        o.requestedAmount || o.deliveredAmount || 0,
-        currency:      o.requestedAmountCurrencyCode || 'USD',
-        status:        o.status,
-        date:          o.transactionDate
-      }));
-    }
-  } catch (err) {
-    console.warn('Order history fetch error:', err.message);
-  }
-
-  // Load orders from localStorage for this user
-  const storedOrders = state.user ? LS.getOrders(state.user.email) : [];
-  // Merge: stored (localStorage) + API orders, deduplicate by transactionId
-  const seen = new Set();
-  const allOrders = [...storedOrders, ...gcOrders, ...atOrders].filter(o => {
-    const key = o.transactionId;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  // Only show orders belonging to the currently logged-in user (localStorage)
+  const allOrders = state.user ? LS.getOrders(state.user.email) : [];
 
   main.innerHTML = `
     <div class="cart-page">
