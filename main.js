@@ -251,6 +251,9 @@ function updateAllHomeSections() {
   // Crypto → patch dedicated section
   const cryptoProds = s.crypto.length ? s.crypto : [];
   if (cryptoProds.length) patchSection('crypto-static-grid', 'crypto-mob', cryptoProds, 'gift');
+
+  // Remove all loading spinners from the home page
+  document.querySelectorAll('#main-content .rl-loading').forEach(el => el.remove());
 }
 
 // Patch just the recharge section when operators load
@@ -279,6 +282,16 @@ function operatorCardHTML(op) {
 
 // ── DOM Ready ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Restore session from localStorage — only if the account still exists
+  const savedSession = LS.getSession();
+  if (savedSession && savedSession.email && LS.findUser(savedSession.email)) {
+    state.user = savedSession;
+    state.orderHistory = LS.getOrders(savedSession.email);
+  } else if (savedSession) {
+    // Stale session (user deleted or old test data) — clear it
+    LS.clearSession();
+  }
   renderNav();
   navigateTo('home');
   updateCartBadge();
@@ -345,9 +358,19 @@ function renderNav() {
     { label: '📋 My Orders',  page: 'orders' },
   ];
 
-  document.querySelector('.nav-inner').innerHTML = navLinks.map(l =>
-    `<a href="#" data-page="${l.page}" onclick="navigateTo('${l.page}');return false;">${l.label}</a>`
-  ).join('');
+
+  const rightLinks = [
+    { label: 'Contact Us', page: 'contact' },
+    ...(state.user ? [{ label: '📋 My Orders', page: 'orders' }] : []),
+  ];
+
+  const linkHTML = l =>
+    `<a href="#" data-page="${l.page}" onclick="navigateTo('${l.page}');return false;">${l.label}</a>`;
+
+  document.querySelector('.nav-inner').innerHTML =
+    `<div class="nav-left">${leftLinks.map(linkHTML).join('')}</div>` +
+    `<div class="nav-right">${rightLinks.map(linkHTML).join('')}</div>`;
+
 
   updateHeaderUser();
 }
@@ -1598,63 +1621,13 @@ function renderTopupConfirmation(result, op, phone, amount) {
 // ORDER HISTORY PAGE
 // ============================================================
 
-async function renderOrderHistory() {
+function renderOrderHistory() {
+  if (!state.user) { navigateTo('signin'); return; }
   const main = document.getElementById('main-content');
 
-  // Show loading state first
-  main.innerHTML = `
-    <div class="cart-page">
-      <div class="container py-5">
-        <h1 style="font-weight:700;margin-bottom:4px;">My <span style="color:#f84464;">Orders</span></h1>
-        <p style="color:#888;margin-bottom:32px;">Your recent gift card & recharge orders</p>
-        <div class="rl-loading" style="justify-content:center;padding:40px;">
-          <span class="rl-spinner"></span> Fetching order history from Reloadly…
-        </div>
-      </div>
-    </div>`;
 
-  // Fetch from both APIs in parallel
-  let gcOrders   = [];
-  let atOrders   = [];
-
-  try {
-    const [gcData, atData] = await Promise.allSettled([
-      api.get('/giftcards/transactions?size=20'),
-      api.get('/airtime/transactions?size=20')
-    ]);
-
-    if (gcData.status === 'fulfilled') {
-      gcOrders = (gcData.value.content || []).map(o => ({
-        type:          'giftcard',
-        transactionId: o.transactionId,
-        productName:   o.product?.productName || 'Gift Card',
-        img:           o.product?.logoUrls?.[0] || '',
-        amount:        o.amount || 0,
-        currency:      o.currencyCode || 'USD',
-        status:        o.status,
-        date:          o.transactionDate || o.date
-      }));
-    }
-
-    if (atData.status === 'fulfilled') {
-      atOrders = (atData.value.content || []).map(o => ({
-        type:          'airtime',
-        transactionId: o.transactionId,
-        productName:   `${o.operatorName || 'Mobile'} — ${o.recipientPhone || ''}`,
-        img:           '',
-        amount:        o.requestedAmount || o.deliveredAmount || 0,
-        currency:      o.requestedAmountCurrencyCode || 'USD',
-        status:        o.status,
-        date:          o.transactionDate
-      }));
-    }
-  } catch (err) {
-    console.warn('Order history fetch error:', err.message);
-  }
-
-  // Merge API orders with local session history
-  const localOrders = state.orderHistory.map(o => ({ ...o, _local: true }));
-  const allOrders   = [...localOrders, ...gcOrders, ...atOrders];
+  // Only show orders belonging to the currently logged-in user (localStorage)
+  const allOrders = LS.getOrders(state.user.email);
 
   main.innerHTML = `
     <div class="cart-page">
