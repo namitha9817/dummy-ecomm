@@ -1084,42 +1084,57 @@ function renderCart() {
 
   main.innerHTML = `
     <div class="cart-page">
-      <div class="cart-inner">
-        <div class="cart-main">
-          <h2>Cart Summary</h2>
-          <p class="cart-count">${state.cartItems.length} Gift${state.cartItems.length !== 1 ? 's' : ''} in Cart</p>
+      <div class="container py-5">
+        <div class="row g-4 align-items-start">
 
-          ${state.cartItems.length === 0 ? `
-            <div style="background:white;border-radius:8px;padding:48px;text-align:center;border:1px solid var(--border);">
-              <div style="font-size:48px;margin-bottom:16px;">🛒</div>
-              <p style="color:var(--text-muted);font-size:16px;">Your cart is empty</p>
-              <button class="btn-primary" style="margin-top:20px;" onclick="navigateTo('digital')">Start Shopping</button>
-            </div>
-          ` : state.cartItems.map(item => `
-            <div class="cart-item">
-              <img src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/80x80/f0f0f0/999?text=IMG'">
-              <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-price"><span class="currency">AED</span>${item.price}</div>
+          <!-- Cart Items -->
+          <div class="col-lg-8">
+            <h2 class="cart-heading">Cart Summary</h2>
+            <p class="cart-count">${state.cartItems.length} Gift${state.cartItems.length !== 1 ? 's' : ''} in Cart</p>
+
+            ${state.cartItems.length === 0 ? `
+              <div class="cart-empty">
+                <div style="font-size:48px;margin-bottom:16px;">🛒</div>
+                <p>Your cart is empty</p>
+                <button class="gd-cart-btn" style="margin-top:20px;max-width:220px;" onclick="navigateTo('home')">Start Shopping</button>
               </div>
-              <span class="cart-remove" onclick="removeFromCart(${item.id})" title="Remove">✕</span>
-            </div>
-          `).join('')}
-        </div>
-
-        <div>
-          <div class="order-summary">
-            <h3>Order Summary</h3>
-            <div class="order-row">
-              <span>Order Total</span>
-              <span class="amount">AED ${total}</span>
-            </div>
-            <div class="order-row total">
-              <span>Total Amount</span>
-              <span class="amount">AED ${total}</span>
-            </div>
-            <button class="btn-block" style="margin-top:20px;" onclick="checkout()" ${state.cartItems.length === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>BUY NOW</button>
+            ` : state.cartItems.map(item => `
+              <div class="cart-item-card">
+                <img src="${item.img}" alt="${item.name}"
+                     onerror="this.src='https://placehold.co/90x90/f0f0f0/999?text=IMG'">
+                <div class="cart-item-info">
+                  <div class="cart-item-name">${item.name}</div>
+                  <div class="cart-item-price-row">
+                    <span class="cart-aed">AED</span>
+                    <span class="cart-price-num">${item.price}</span>
+                  </div>
+                </div>
+                <button class="cart-remove-btn" onclick="removeFromCart(${item.id})" title="Remove">✕</button>
+              </div>
+            `).join('')}
           </div>
+
+          <!-- Order Summary -->
+          <div class="col-lg-4">
+            <div class="order-summary-card">
+              <h3 class="order-summary-title">Order Summary</h3>
+              <div class="order-row-item">
+                <span>Order Total</span>
+                <span>AED <strong>${total}</strong></span>
+              </div>
+              <div class="order-divider"></div>
+              <div class="order-row-item order-total-row">
+                <span>Total Amount</span>
+                <span>AED <strong>${total}</strong></span>
+              </div>
+              <button class="gd-cart-btn" style="margin-top:24px;"
+                onclick="checkout()"
+                ${state.cartItems.length === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                BUY NOW
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -1144,67 +1159,76 @@ function renderGiftDetail(productJson) {
   const main = document.getElementById('main-content');
 
   main.innerHTML = `
-    <div class="gift-detail">
-      <div>
-        <div class="gift-img-card">
-          <img src="${product.img}" alt="${product.name}" onerror="this.src='https://placehold.co/380x280/f0f0f0/999?text=Product'" style="max-width:100%;">
-        </div>
-      </div>
+    <div class="gd-page">
+      <div class="container py-5">
+        <div class="row g-4 align-items-start">
 
-      <div class="gift-info">
-        <h1>${product.name}</h1>
-        <p class="subtitle">EPAY C2C XSX/XB1 EA Sports FC 24 Ultimate Edition (AE)</p>
-
-        <div class="gift-select-box">
-          <h3>Select card value</h3>
-
-          <div class="value-options">
-            <button class="value-btn active" onclick="selectValue(this, 200)">AED 200</button>
-            <button class="value-btn" onclick="selectValue(this, 0)">Other</button>
-          </div>
-
-          <div id="custom-amount-wrap" style="display:none;margin-bottom:16px;">
-            <input type="number" class="form-control light" placeholder="Custom Amount" id="custom-amount" min="10" step="10">
-          </div>
-
-          <div class="gift-tabs">
-            <button class="gift-tab" onclick="switchGiftTab(this, 'gift')">This is a gift</button>
-            <button class="gift-tab active" onclick="switchGiftTab(this, 'me')">This is for me</button>
-          </div>
-
-          <div class="gift-tab-content" id="tab-gift">
-            <div class="form-group">
-              <input type="email" class="form-control light" placeholder="Their Email">
-            </div>
-            <div class="form-group">
-              <input type="text" class="form-control light" placeholder="Your Name/s">
-            </div>
-            <div class="form-group">
-              <textarea class="form-control light" placeholder="Add a Personal Message" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-              <input type="date" class="form-control light" placeholder="dd/mm/yyyy">
+          <!-- Product Image -->
+          <div class="col-lg-5 col-md-5">
+            <div class="gd-img-card">
+              <img src="${product.img}" alt="${product.name}"
+                   onerror="this.src='https://placehold.co/420x380/f0f0f0/999?text=Product'">
             </div>
           </div>
 
-          <div class="gift-tab-content active" id="tab-me">
-            <p>Buying for yourself? We'll send the gift card to your Registered email address.</p>
+          <!-- Product Info -->
+          <div class="col-lg-7 col-md-7">
+            <div class="gd-info-card">
+
+              <h1 class="gd-title">${product.name}</h1>
+              <p class="gd-subtitle">EPAY C2C XSX/XB1 EA Sports FC 24 Ultimate Edition (AE)</p>
+
+              <!-- Card Value -->
+              <div class="gd-section">
+                <h3 class="gd-section-title">Select card value</h3>
+                <div class="gd-value-options">
+                  <button class="gd-value-btn active" onclick="selectValue(this, ${product.price})">AED ${product.price}</button>
+                  <button class="gd-value-btn" onclick="selectValue(this, 0)">Other</button>
+                </div>
+                <div id="custom-amount-wrap" style="display:none;margin-top:12px;">
+                  <input type="number" class="gd-input" placeholder="Custom Amount" id="custom-amount" min="10" step="10">
+                </div>
+              </div>
+
+              <!-- Tabs -->
+              <div class="gd-tabs">
+                <button class="gd-tab" onclick="switchGiftTab(this,'gift')">This is a gift</button>
+                <button class="gd-tab active" onclick="switchGiftTab(this,'me')">This is for me</button>
+              </div>
+
+              <div class="gift-tab-content" id="tab-gift">
+                <div class="mb-3"><input type="email" class="gd-input" placeholder="Their Email"></div>
+                <div class="mb-3"><input type="text"  class="gd-input" placeholder="Your Name/s"></div>
+                <div class="mb-3"><textarea class="gd-input" placeholder="Add a Personal Message" rows="3"></textarea></div>
+                <div class="mb-3"><input type="date"  class="gd-input"></div>
+              </div>
+
+              <div class="gift-tab-content active" id="tab-me">
+                <p class="gd-note">Buying for yourself? We'll send the gift card to your Registered email address.</p>
+              </div>
+
+              <!-- Add to Cart -->
+              <button class="gd-cart-btn" onclick="addToCart(${JSON.stringify(JSON.stringify(product))});showToast('Added to cart!');">
+                ADD TO CART
+              </button>
+
+              <!-- About -->
+              <div class="gd-about">
+                <h3 class="gd-section-title">About these gift cards</h3>
+                <ul class="gd-about-list">
+                  <li>Securely sent via registered post</li>
+                  <li>Arrives within 5–10 business days</li>
+                  <li>Delivery fees from AED 5.50 per address</li>
+                  <li>Order up to 10 gift cards at a time</li>
+                  <li>Deliver to the same or multiple addresses</li>
+                  <li>Every card valid for 4 years</li>
+                  <li>See our gift card purchase terms &amp; conditions</li>
+                </ul>
+              </div>
+
+            </div>
           </div>
 
-          <button class="btn-block" onclick="addToCart(${JSON.stringify(JSON.stringify(product))})">ADD TO CART</button>
-        </div>
-
-        <div class="gift-about">
-          <h3>About these gift cards</h3>
-          <ul>
-            <li>Securely sent via registered post</li>
-            <li>Arrives within 5–10 business days</li>
-            <li>Delivery fees from AED 5.50 per address</li>
-            <li>Order up to 10 gift cards at a time</li>
-            <li>Deliver to the same or multiple addresses</li>
-            <li>Every card valid for 4 years</li>
-            <li>See our gift card purchase terms & conditions</li>
-          </ul>
         </div>
       </div>
     </div>
