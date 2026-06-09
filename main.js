@@ -1,47 +1,6 @@
 // ============================================================
-// NEXCARDS — Main JavaScript
+// SOUKSNAP — Main JavaScript
 // ============================================================
-
-// ============================================================
-// LOCAL STORAGE HELPERS
-// ============================================================
-
-const LS = {
-  // ── Users ────────────────────────────────────────────────
-  getUsers() {
-    return JSON.parse(localStorage.getItem('nexcards_users') || '[]');
-  },
-  saveUser(user) {
-    const users = LS.getUsers();
-    const idx   = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
-    if (idx > -1) users[idx] = user; else users.push(user);
-    localStorage.setItem('nexcards_users', JSON.stringify(users));
-  },
-  findUser(email) {
-    return LS.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
-  },
-
-  // ── Session ──────────────────────────────────────────────
-  saveSession(user) {
-    localStorage.setItem('nexcards_session', JSON.stringify({ name: user.name, email: user.email }));
-  },
-  getSession() {
-    try { return JSON.parse(localStorage.getItem('nexcards_session')); } catch { return null; }
-  },
-  clearSession() {
-    localStorage.removeItem('nexcards_session');
-  },
-
-  // ── Orders per user ──────────────────────────────────────
-  getOrders(email) {
-    return JSON.parse(localStorage.getItem(`nexcards_orders_${email.toLowerCase()}`) || '[]');
-  },
-  saveOrder(email, order) {
-    const orders = LS.getOrders(email);
-    orders.unshift({ ...order, date: order.date || new Date().toISOString() });
-    localStorage.setItem(`nexcards_orders_${email.toLowerCase()}`, JSON.stringify(orders));
-  }
-};
 
 // ── State ───────────────────────────────────────────────────
 const state = {
@@ -320,12 +279,6 @@ function operatorCardHTML(op) {
 
 // ── DOM Ready ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Restore session from localStorage if exists
-  const savedSession = LS.getSession();
-  if (savedSession) {
-    state.user = savedSession;
-    state.orderHistory = LS.getOrders(savedSession.email);
-  }
   renderNav();
   navigateTo('home');
   updateCartBadge();
@@ -363,10 +316,7 @@ function navigateTo(page, data = {}) {
     'signup':        renderSignUp,
     'cart':          renderCart,
     'recharge':      () => renderMobileRecharge(data.operatorId),
-    'orders':        () => {
-      if (!state.user) { showToast('Please sign in to view your orders.'); navigateTo('signin'); return; }
-      renderOrderHistory();
-    },
+    'orders':        renderOrderHistory,
     'gift-detail': () => {
       const product = data.productId !== undefined
         ? findProduct(data.productId)
@@ -382,7 +332,7 @@ function navigateTo(page, data = {}) {
 
 // ── Nav & Header ─────────────────────────────────────────────
 function renderNav() {
-  const leftLinks = [
+  const navLinks = [
     { label: 'Home',          page: 'home' },
     { label: 'About Us',      page: 'about' },
     { label: 'Digital Card',  page: 'digital' },
@@ -391,20 +341,13 @@ function renderNav() {
     { label: 'Crypto',        page: 'crypto' },
     { label: 'Recharge',      page: 'recharge' },
     { label: 'Entertainment', page: 'entertainment' },
+    { label: 'Contact Us',    page: 'contact' },
+    { label: '📋 My Orders',  page: 'orders' },
   ];
 
-  const rightLinks = [
-    { label: 'Contact Us', page: 'contact' },
-    ...(state.user ? [{ label: '📋 My Orders', page: 'orders' }] : []),
-  ];
-
-  const linkHTML = l =>
-    `<a href="#" data-page="${l.page}" onclick="navigateTo('${l.page}');return false;">${l.label}</a>`;
-
-  document.querySelector('.nav-inner').innerHTML =
-    leftLinks.map(linkHTML).join('') +
-    `<span class="nav-spacer"></span>` +
-    rightLinks.map(linkHTML).join('');
+  document.querySelector('.nav-inner').innerHTML = navLinks.map(l =>
+    `<a href="#" data-page="${l.page}" onclick="navigateTo('${l.page}');return false;">${l.label}</a>`
+  ).join('');
 
   updateHeaderUser();
 }
@@ -415,7 +358,7 @@ function updateHeaderUser() {
 
   if (state.user) {
     actions.innerHTML = `
-      <span class="btn-user-name">Hi, ${state.user.name.split(' ')[0].toUpperCase()}</span>
+      <span class="btn-user-name">Hi, ${state.user.name.toUpperCase()}</span>
       <button class="btn-logout" onclick="logout()">LOGOUT</button>
       <div class="cart-wrapper">
         <div class="cart-btn" onclick="toggleCart()">🛒
@@ -437,10 +380,7 @@ function updateHeaderUser() {
 
 function logout() {
   state.user = null;
-  state.orderHistory = [];
-  LS.clearSession();
   updateHeaderUser();
-  renderNav();
   showToast('Logged out successfully');
   navigateTo('home');
 }
@@ -1057,74 +997,26 @@ function renderSignIn() {
     <div class="auth-page">
       <div class="auth-card">
         <h2>Sign In</h2>
-        <p style="color:#888;font-size:13px;margin-bottom:20px;">Welcome back to NexCards</p>
-
-        <div class="form-group">
-          <input type="email" class="form-control light" placeholder="Email Address *" id="signin-email"
-                 oninput="clearFieldError('signin-email')">
-          <div class="field-error" id="err-signin-email"></div>
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control light" placeholder="Password *" id="signin-password"
-                 oninput="clearFieldError('signin-password')"
-                 onkeydown="if(event.key==='Enter') submitSignIn()">
-          <div class="field-error" id="err-signin-password"></div>
-        </div>
-
+        <div class="form-group"><input type="text" class="form-control light" placeholder="Email or Phone" id="signin-email"></div>
+        <div class="form-group"><input type="password" class="form-control light" placeholder="Password" id="signin-password"></div>
         <div class="checkbox-row">
-          <label class="checkbox-label">
-            <input type="checkbox" id="remember-me" checked> Remember Me
-          </label>
+          <label class="checkbox-label"><input type="checkbox" id="remember-me"> Remember Me</label>
           <a href="#" class="forgot-link">Forgot Your Password?</a>
         </div>
-
         <button class="btn-block" onclick="submitSignIn()">SIGN IN</button>
-
-        <div class="auth-footer">
-          Don't have an account? <a href="#" onclick="navigateTo('signup');return false;">Sign Up</a>
-        </div>
+        <div class="auth-footer">Don't have an account? <a href="#" onclick="navigateTo('signup');return false;">Sign Up</a></div>
       </div>
     </div>`;
 }
 
 function submitSignIn() {
-  const email    = document.getElementById('signin-email').value.trim();
+  const email    = document.getElementById('signin-email').value;
   const password = document.getElementById('signin-password').value;
-  const remember = document.getElementById('remember-me')?.checked;
-
-  let valid = true;
-
-  if (!email) {
-    setFieldError('signin-email', 'Email is required.');
-    valid = false;
-  } else if (!isValidEmail(email)) {
-    setFieldError('signin-email', 'Please enter a valid email address.');
-    valid = false;
-  }
-  if (!password) {
-    setFieldError('signin-password', 'Password is required.');
-    valid = false;
-  }
-  if (!valid) return;
-
-  // Check against localStorage users
-  const user = LS.findUser(email);
-  if (!user) {
-    setFieldError('signin-email', 'No account found with this email. Please sign up.');
-    return;
-  }
-  if (user.password !== password) {
-    setFieldError('signin-password', 'Incorrect password. Please try again.');
-    return;
-  }
-
-  // Sign in success
-  state.user = { name: user.name, email: user.email };
-  state.orderHistory = LS.getOrders(user.email);
-  if (remember) LS.saveSession(state.user);
+  if (!email || !password) { showToast('Please enter your email and password.'); return; }
+  const name = email.includes('@') ? email.split('@')[0] : email;
+  state.user = { name: name.charAt(0).toUpperCase() + name.slice(1), email };
   updateHeaderUser();
-  renderNav();
-  showToast(`Welcome back, ${user.name}! 👋`);
+  showToast(`Welcome back, ${state.user.name}!`);
   navigateTo('home');
 }
 
@@ -1133,50 +1025,17 @@ function renderSignUp() {
   main.innerHTML = `
     <div class="auth-page">
       <div class="auth-card">
-        <h2>Create Account</h2>
-        <p style="color:#888;font-size:13px;margin-bottom:20px;">Join NexCards — instant gift cards, gaming & recharge</p>
-
+        <h2>Sign Up</h2>
         <div class="auth-form-row">
-          <div class="form-group">
-            <input type="text" class="form-control light" placeholder="Full Name *" id="signup-name"
-                   oninput="clearFieldError('signup-name')">
-            <div class="field-error" id="err-signup-name"></div>
-          </div>
-          <div class="form-group">
-            <input type="tel" class="form-control light" placeholder="Phone Number" id="signup-phone">
-          </div>
+          <div class="form-group"><input type="text" class="form-control light" placeholder="Full Name" id="signup-name"></div>
+          <div class="form-group"><input type="tel" class="form-control light" placeholder="Phone Number" id="signup-phone"></div>
         </div>
-
-        <div class="form-group">
-          <input type="email" class="form-control light" placeholder="Email Address *" id="signup-email"
-                 oninput="clearFieldError('signup-email')">
-          <div class="field-error" id="err-signup-email"></div>
-        </div>
-
+        <div class="form-group"><input type="email" class="form-control light" placeholder="Email" id="signup-email"></div>
         <div class="form-row-2">
-          <div class="form-group">
-            <input type="password" class="form-control light" placeholder="Password *" id="signup-password"
-                   oninput="checkPasswordStrength(this.value); clearFieldError('signup-password')">
-            <!-- Strength bar -->
-            <div id="pw-strength-bar" style="display:none;margin-top:8px;">
-              <div style="height:4px;border-radius:4px;background:#eee;overflow:hidden;">
-                <div id="pw-strength-fill" style="height:100%;width:0%;transition:all 0.3s;border-radius:4px;"></div>
-              </div>
-              <div id="pw-strength-label" style="font-size:11px;margin-top:4px;"></div>
-            </div>
-            <div class="field-error" id="err-signup-password"></div>
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control light" placeholder="Confirm Password *" id="signup-confirm"
-                   oninput="clearFieldError('signup-confirm')">
-            <div class="field-error" id="err-signup-confirm"></div>
-          </div>
+          <div class="form-group"><input type="password" class="form-control light" placeholder="Password" id="signup-password"></div>
+          <div class="form-group"><input type="password" class="form-control light" placeholder="Confirm Password" id="signup-confirm"></div>
         </div>
-
-        <div class="form-group">
-          <input type="text" class="form-control light" placeholder="Address" id="signup-address">
-        </div>
-
+        <div class="form-group"><input type="text" class="form-control light" placeholder="Address" id="signup-address"></div>
         <div class="form-row-3">
           <div class="form-group">
             <select class="form-control light" id="signup-country">
@@ -1185,111 +1044,27 @@ function renderSignUp() {
               <option value="SA">Saudi Arabia</option>
               <option value="IN">India</option>
               <option value="PH">Philippines</option>
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
             </select>
           </div>
           <div class="form-group"><input type="text" class="form-control light" placeholder="City" id="signup-city"></div>
           <div class="form-group"><input type="text" class="form-control light" placeholder="Postal Code" id="signup-postal"></div>
         </div>
-
-        <button class="btn-block" onclick="submitSignUp()">CREATE ACCOUNT</button>
+        <button class="btn-block" onclick="submitSignUp()">SIGN UP</button>
         <div class="auth-footer">Already have an account? <a href="#" onclick="navigateTo('signin');return false;">Sign In</a></div>
       </div>
     </div>`;
 }
 
-// Validate email format
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
-}
-
-// Password strength checker
-function checkPasswordStrength(pw) {
-  const bar   = document.getElementById('pw-strength-bar');
-  const fill  = document.getElementById('pw-strength-fill');
-  const label = document.getElementById('pw-strength-label');
-  if (!bar || !pw) return;
-
-  bar.style.display = pw.length ? 'block' : 'none';
-  let score = 0;
-  if (pw.length >= 8)              score++;
-  if (/[A-Z]/.test(pw))           score++;
-  if (/[0-9]/.test(pw))           score++;
-  if (/[^A-Za-z0-9]/.test(pw))    score++;
-
-  const levels = [
-    { pct: '25%', color: '#e74c3c', text: 'Weak' },
-    { pct: '50%', color: '#e67e22', text: 'Fair' },
-    { pct: '75%', color: '#f1c40f', text: 'Good' },
-    { pct: '100%',color: '#27ae60', text: 'Strong' },
-  ];
-  const lvl = levels[Math.max(0, score - 1)];
-  fill.style.width      = lvl.pct;
-  fill.style.background = lvl.color;
-  label.textContent     = lvl.text;
-  label.style.color     = lvl.color;
-}
-
-function setFieldError(id, msg) {
-  const el = document.getElementById(`err-${id}`);
-  const input = document.getElementById(id);
-  if (el)    el.textContent = msg;
-  if (input) input.style.borderColor = msg ? '#e74c3c' : '';
-}
-function clearFieldError(id) {
-  setFieldError(id, '');
-}
-
 function submitSignUp() {
-  const name     = document.getElementById('signup-name').value.trim();
-  const email    = document.getElementById('signup-email').value.trim();
+  const name     = document.getElementById('signup-name').value;
+  const email    = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
   const confirm  = document.getElementById('signup-confirm').value;
-
-  let valid = true;
-
-  if (!name) {
-    setFieldError('signup-name', 'Full name is required.');
-    valid = false;
-  }
-  if (!email) {
-    setFieldError('signup-email', 'Email is required.');
-    valid = false;
-  } else if (!isValidEmail(email)) {
-    setFieldError('signup-email', 'Please enter a valid email address.');
-    valid = false;
-  } else if (LS.findUser(email)) {
-    setFieldError('signup-email', 'An account with this email already exists.');
-    valid = false;
-  }
-  if (!password) {
-    setFieldError('signup-password', 'Password is required.');
-    valid = false;
-  } else if (password.length < 8) {
-    setFieldError('signup-password', 'Password must be at least 8 characters.');
-    valid = false;
-  } else if (!/[A-Z]/.test(password)) {
-    setFieldError('signup-password', 'Include at least one uppercase letter.');
-    valid = false;
-  } else if (!/[0-9]/.test(password)) {
-    setFieldError('signup-password', 'Include at least one number.');
-    valid = false;
-  }
-  if (password !== confirm) {
-    setFieldError('signup-confirm', 'Passwords do not match.');
-    valid = false;
-  }
-
-  if (!valid) return;
-
-  // Save user to localStorage
-  LS.saveUser({ name, email, password });
+  if (!name || !email || !password || !confirm) { showToast('Please fill in all required fields.'); return; }
+  if (password !== confirm) { showToast('Passwords do not match!'); return; }
+  if (password.length < 6)  { showToast('Password must be at least 6 characters.'); return; }
   state.user = { name, email };
-  state.orderHistory = [];
-  LS.saveSession(state.user);
   updateHeaderUser();
-  renderNav();
   showToast(`Welcome to NexCards, ${name}! 🎉`);
   navigateTo('home');
 }
@@ -1405,36 +1180,19 @@ async function checkout() {
       orders.push(...staticItems.map(i => ({ simulated: true, product: i.name })));
     }
 
-    // ── Save to order history (localStorage + state) ──────
-    // Also save simulated static orders
-    const allItemsForHistory = [
-      ...reloadlyItems.map((item, i) => {
-        const rlOrder = orders[i];
-        return {
-          type: 'giftcard',
-          transactionId: rlOrder?.transactionId || `local-${Date.now()}-${i}`,
-          productName: item.name,
-          img: item.img || '',
-          amount: item.price,
-          currency: item.currency || 'USD',
-          status: rlOrder?.status || 'PROCESSING',
-          _local: true
-        };
-      }),
-      ...staticItems.map((item, i) => ({
-        type: 'giftcard',
-        transactionId: `local-${Date.now()}-static-${i}`,
-        productName: item.name,
-        img: item.img || '',
-        amount: item.price,
-        currency: 'AED',
-        status: 'COMPLETED',
-        _local: true
-      }))
-    ];
-    allItemsForHistory.forEach(o => {
-      state.orderHistory.unshift(o);
-      if (state.user) LS.saveOrder(state.user.email, o);
+    // ── Save to order history ──────────────────────────────
+    orders.filter(o => o.transactionId).forEach(o => {
+      state.orderHistory.push({
+        type:          'giftcard',
+        transactionId: o.transactionId,
+        productName:   o.product?.productName || 'Gift Card',
+        img:           o.product?.logoUrls?.[0] || '',
+        amount:        o.amount || 0,
+        currency:      o.currencyCode || 'USD',
+        status:        o.status || 'PROCESSING',
+        date:          new Date().toISOString(),
+        _local:        true
+      });
     });
 
     // ── Success ────────────────────────────────────────────
@@ -1791,20 +1549,18 @@ async function placeTopup() {
       senderPhone:    cc + phone
     });
 
-    // Save to order history (localStorage + state)
+    // Save to order history
     const op = state.airtimeOperators.find(o => o.operatorId == operatorId);
-    const airtimeOrder = {
+    state.orderHistory.push({
       type:          'airtime',
       transactionId: result.transactionId,
-      productName:   `${op?.name?.replace(' United Arab Emirates','').replace(' UAE','') || 'Mobile'} — +${cc}${phone}`,
-      img:           op?.logoUrls?.[0] || '',
+      operator:      op?.name || 'Unknown',
+      phone:         '+' + cc + phone,
       amount,
       currency:      'AED',
       status:        result.status || 'COMPLETED',
       date:          new Date().toISOString()
-    };
-    state.orderHistory.unshift(airtimeOrder);
-    if (state.user) LS.saveOrder(state.user.email, airtimeOrder);
+    });
 
     showToast(`✅ AED ${amount} topped up to +${cc}${phone}!`, 'success');
     renderTopupConfirmation(result, op, cc + phone, amount);
@@ -1897,16 +1653,9 @@ async function renderOrderHistory() {
     console.warn('Order history fetch error:', err.message);
   }
 
-  // Load orders from localStorage for this user
-  const storedOrders = state.user ? LS.getOrders(state.user.email) : [];
-  // Merge: stored (localStorage) + API orders, deduplicate by transactionId
-  const seen = new Set();
-  const allOrders = [...storedOrders, ...gcOrders, ...atOrders].filter(o => {
-    const key = o.transactionId;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  // Merge API orders with local session history
+  const localOrders = state.orderHistory.map(o => ({ ...o, _local: true }));
+  const allOrders   = [...localOrders, ...gcOrders, ...atOrders];
 
   main.innerHTML = `
     <div class="cart-page">
