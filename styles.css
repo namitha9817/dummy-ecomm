@@ -224,6 +224,10 @@ button { cursor: pointer; border: none; background: none; }
   gap: 16px;
 }
 
+.carousel-item{
+  max-height: 430px;
+}
+
 .digital_card figure {
   margin: 0;
 }
@@ -278,6 +282,7 @@ button { cursor: pointer; border: none; background: none; }
   height: 220px;
   object-fit: cover;
   transition: transform .4s ease;
+  border: 1px solid #bcbcbc;
 }
 
 .gift_card figure:hover img {
@@ -831,7 +836,6 @@ button { cursor: pointer; border: none; background: none; }
   color: #000;
   font-size: 14px;
   font-family: 'Poppins', sans-serif;
-  width: 47%;
   margin-bottom: 15px;
   position: relative;
   background: #fff;
@@ -841,8 +845,62 @@ button { cursor: pointer; border: none; background: none; }
   animation: mover 2s ease 0s infinite alternate;
 }
 
+.waiting:first-child {
+    top: 2rem;
+}
+
+.waiting:nth-of-type(2) {
+    animation: mover2 2s infinite alternate;
+}
+
+.waiting:nth-of-type(3) {
+    top: 2rem;
+    left: 2rem;
+    animation: mover1 2s infinite alternate;
+}
+
+.waiting:last-child {
+    left: 2rem;
+    animation: mover3 2s infinite alternate;
+}
+
+@keyframes mover2{
+  0% {
+    transform: translateY(0px);
+}
+
+100% {
+    transform: translateY(30px);
+  }
+}
+
+@keyframes mover1{
+  0% {
+    transform: translateY(0px);
+}
+
+100% {
+    transform: translateY(-30px);
+  }
+}
+
+@keyframes mover3{
+  0% {
+    transform: translateY(0px);
+}
+
+100% {
+    transform: translateY(40px);
+  }
+}
+
+
 .waiting:hover {
   box-shadow: 0 6px 20px rgba(248, 68, 100, 0.15);
+}
+
+.align-center{
+  align-self: center;
 }
 
 .waiting figure {
@@ -869,6 +927,13 @@ button { cursor: pointer; border: none; background: none; }
   align-items: center;
   justify-content: center;
   height: 100%;
+  padding: 0 1rem 0 3rem;
+}
+
+.waiting_row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .waiting_center img {
@@ -1242,7 +1307,7 @@ button { cursor: pointer; border: none; background: none; }
    ============================================================ */
 .cart-page {
   background: #fdf0f2;
-  min-height: calc(100vh - 115px);
+  min-height: auto;
 }
 .cart-heading {
   font-size: 28px;
@@ -2299,7 +2364,10 @@ textarea.form-control {
   box-shadow: 0 8px 24px rgba(248,68,100,0.12);
   transform: translateY(-3px);
 }
-.operator-logo { margin-bottom: 12px; }
+.operator-logo { 
+  margin-bottom: 12px; 
+  justify-items: center;
+}
 .operator-logo img {
   width: 72px;
   height: 72px;
