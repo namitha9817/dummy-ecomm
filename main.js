@@ -498,12 +498,12 @@ function renderHome() {
           <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">
             <div class="about">
               <div class="heading">Gift
-                <span style="color:white;">
-                  <span>Whenever.</span>
-                  <span>Moments.</span>
-                  <span>Sustainably.</span>
-                  <span>Joy.</span>
-                  <span>Big.</span>
+                <span>
+                  <span style="color:white;">Whenever.</span>
+                  <span style="color:white;">Moments.</span>
+                  <span style="color:white;">Sustainably.</span>
+                  <span style="color:white;">Joy.</span>
+                  <span style="color:white;">Big.</span>
                 </span>
               </div>
               <p>Welcome to Souk Snap, a premier vending solutions provider led by Al Afdal Selling Products By Wellness Within LLC - FZ. Our mission is to transform everyday convenience through cutting-edge vending technology, catering to diverse needs in the UAE and expanding our reach to global markets in the USA and Europe.</p>
