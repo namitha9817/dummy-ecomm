@@ -1,54 +1,196 @@
 // ============================================================
-// SOUKSNAP - Main JavaScript
+// SOUKSNAP — Main JavaScript
 // ============================================================
 
-// ---- State ----
+// ── State ───────────────────────────────────────────────────
 const state = {
   currentPage: 'home',
   cartItems: [],
-  user: null,  // { name, email }
-  cartOpen: false
+  user: null,
+  cartOpen: false,
+  liveProducts: [],        // populated from Reloadly API
+  liveProductsLoaded: false,
+  accountBalance: null
 };
 
-// ---- Products Data ----
+// ── Static fallback products ─────────────────────────────────
 const products = [
-  { id: 28, name: 'EA Sports FC 24 12000 FC Points', price: 380, category: 'digital', img: 'https://souksnap.com/gift_card_images/28/5213-Souksnap.jpg' },
-  { id: 29, name: 'EA Sports FC 24 5900 FC Points', price: 200, category: 'digital', img: 'https://souksnap.com/gift_card_images/29/6437-Souksnap.jpg' },
-  { id: 30, name: 'EA Sports FC 24 2800 FC Points', price: 100, category: 'digital', img: 'https://souksnap.com/gift_card_images/30/6586-Souksnap.jpg' },
-  { id: 31, name: 'EA Sports FC 24 Ultimate Edition', price: 389, category: 'digital', img: 'https://souksnap.com/gift_card_images/31/8171-Souksnap.jpg' },
-  { id: 32, name: 'EA Sports FC 24 Standard Edition', price: 299, category: 'digital', img: 'https://souksnap.com/gift_card_images/32/1987-Souksnap.jpg' },
-  { id: 33, name: 'EA Sports FC 24 Standard Edition', price: 299, category: 'digital', img: 'https://souksnap.com/gift_card_images/33/9430-Souksnap.jpg' },
-  { id: 34, name: "Senua's Saga: Hellblade II Xbox Series X|S - Instant Delivery", price: 199, category: 'digital', img: 'https://souksnap.com/gift_card_images/34/7427-Souksnap.jpg' },
-  { id: 35, name: 'Minecraft Legends Deluxe Edition Xbox Series X|S - Instant Delivery', price: 199, category: 'digital', img: 'https://souksnap.com/gift_card_images/35/8157-Souksnap.jpg' },
-  { id: 36, name: 'Minecraft Legends for Windows 10 PC - Instant Delivery', price: 159, category: 'digital', img: 'https://souksnap.com/gift_card_images/36/7708-Souksnap.jpg' },
-  { id: 5,  name: "Thrill-Seeker's Paradise Jet Ski Adventures in Dubai", price: 1200, category: 'jetski', img: 'https://souksnap.com/gift_card_images/5/4284-1.jpg' },
-  { id: 6,  name: 'Jet Ski in Fujairah: A Unique Ride Along the Indian Ocean', price: 600, category: 'jetski', img: 'https://souksnap.com/gift_card_images/6/3613-1.jpg' },
-  { id: 7,  name: 'High-Speed Fun in Abu Dhabi Jet Skiing by Yas Island', price: 1500, category: 'jetski', img: 'https://souksnap.com/gift_card_images/7/2412-1.jpg' },
-  { id: 8,  name: "Explore Ras Al Khaimah's Scenic Coastline with a Jet Ski Tour", price: 750, category: 'jetski', img: 'https://souksnap.com/gift_card_images/8/7702-1.jpg' },
-  { id: 24, name: 'Authentic Tent Stay at Longbeach Campground', price: 550, category: 'getaways', img: 'https://souksnap.com/gift_card_images/24/8641-Souksnap.jpg' },
-  { id: 25, name: '5-Star Weekday Vacation Stay at Radisson Blu Fujairah', price: 750, category: 'getaways', img: 'https://souksnap.com/gift_card_images/25/4407-Souksnap.jpg' },
-  { id: 26, name: '5 Star Winter Stay at Al Bahar Hotel and Resort', price: 1050, category: 'getaways', img: 'https://souksnap.com/gift_card_images/26/6362-Souksnap.jpg' },
-  { id: 27, name: '1-Night All Inclusive Stay at Danat Al Ain', price: 1350, category: 'getaways', img: 'https://souksnap.com/gift_card_images/27/7436-Souksnap.jpg' },
-  { id: 15, name: 'Massage + Spa Week Offer', price: 750, category: 'wellness', img: 'https://souksnap.com/gift_card_images/15/9017-Souksnap.jpg' },
-  { id: 16, name: 'Massage + Full Day Pass at Cleopatra\'s Spa', price: 850, category: 'wellness', img: 'https://souksnap.com/gift_card_images/16/8696-Souksnap.jpg' },
-  { id: 17, name: 'DoubleTree by Hilton JBR Luxury Massage', price: 600, category: 'wellness', img: 'https://souksnap.com/gift_card_images/17/8134-Souksnap.jpg' },
-  { id: 18, name: 'All-Day Pass at Pharaoh\'s Club', price: 200, category: 'wellness', img: 'https://souksnap.com/gift_card_images/18/7631-Souksnap.jpg' },
-  { id: 19, name: '5 Star Thai Relaxation Package at Sheraton Sharjah', price: 450, category: 'wellness', img: 'https://souksnap.com/gift_card_images/19/9007-Souksnap.jpg' },
+  { id: 28, name: 'EA Sports FC 24 12000 FC Points',                                        price: 380,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/28/5213-Souksnap.jpg' },
+  { id: 29, name: 'EA Sports FC 24 5900 FC Points',                                         price: 200,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/29/6437-Souksnap.jpg' },
+  { id: 30, name: 'EA Sports FC 24 2800 FC Points',                                         price: 100,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/30/6586-Souksnap.jpg' },
+  { id: 31, name: 'EA Sports FC 24 Ultimate Edition',                                       price: 389,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/31/8171-Souksnap.jpg' },
+  { id: 32, name: 'EA Sports FC 24 Standard Edition',                                       price: 299,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/32/1987-Souksnap.jpg' },
+  { id: 33, name: 'EA Sports FC 24 Standard Edition',                                       price: 299,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/33/9430-Souksnap.jpg' },
+  { id: 34, name: "Senua's Saga: Hellblade II Xbox Series X|S",                             price: 199,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/34/7427-Souksnap.jpg' },
+  { id: 35, name: 'Minecraft Legends Deluxe Edition Xbox',                                  price: 199,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/35/8157-Souksnap.jpg' },
+  { id: 36, name: 'Minecraft Legends for Windows 10 PC',                                    price: 159,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/36/7708-Souksnap.jpg' },
+  { id: 5,  name: "Thrill-Seeker's Paradise Jet Ski Adventures in Dubai",                   price: 1200, category: 'jetski',    img: 'https://souksnap.com/gift_card_images/5/4284-1.jpg' },
+  { id: 6,  name: 'Jet Ski in Fujairah: A Unique Ride Along the Indian Ocean',              price: 600,  category: 'jetski',    img: 'https://souksnap.com/gift_card_images/6/3613-1.jpg' },
+  { id: 7,  name: 'High-Speed Fun in Abu Dhabi Jet Skiing by Yas Island',                   price: 1500, category: 'jetski',    img: 'https://souksnap.com/gift_card_images/7/2412-1.jpg' },
+  { id: 8,  name: "Explore Ras Al Khaimah's Scenic Coastline with a Jet Ski Tour",          price: 750,  category: 'jetski',    img: 'https://souksnap.com/gift_card_images/8/7702-1.jpg' },
+  { id: 24, name: 'Authentic Tent Stay at Longbeach Campground',                            price: 550,  category: 'getaways',  img: 'https://souksnap.com/gift_card_images/24/8641-Souksnap.jpg' },
+  { id: 25, name: '5-Star Weekday Vacation Stay at Radisson Blu Fujairah',                  price: 750,  category: 'getaways',  img: 'https://souksnap.com/gift_card_images/25/4407-Souksnap.jpg' },
+  { id: 26, name: '5 Star Winter Stay at Al Bahar Hotel and Resort',                        price: 1050, category: 'getaways',  img: 'https://souksnap.com/gift_card_images/26/6362-Souksnap.jpg' },
+  { id: 27, name: '1-Night All Inclusive Stay at Danat Al Ain',                             price: 1350, category: 'getaways',  img: 'https://souksnap.com/gift_card_images/27/7436-Souksnap.jpg' },
+  { id: 15, name: 'Massage + Spa Week Offer',                                               price: 750,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/15/9017-Souksnap.jpg' },
+  { id: 16, name: "Massage + Full Day Pass at Cleopatra's Spa",                             price: 850,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/16/8696-Souksnap.jpg' },
+  { id: 17, name: 'DoubleTree by Hilton JBR Luxury Massage',                                price: 600,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/17/8134-Souksnap.jpg' },
+  { id: 18, name: "All-Day Pass at Pharaoh's Club",                                         price: 200,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/18/7631-Souksnap.jpg' },
+  { id: 19, name: '5 Star Thai Relaxation Package at Sheraton Sharjah',                     price: 450,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/19/9007-Souksnap.jpg' },
 ];
 
-// ---- DOM Ready ----
+// ============================================================
+// RELOADLY API LAYER
+// ============================================================
+
+const API_BASE = 'http://localhost:3001/api';
+
+const api = {
+  async get(path) {
+    const res = await fetch(`${API_BASE}${path}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || `HTTP ${res.status}`);
+    }
+    return res.json();
+  },
+  async post(path, body) {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data;
+  }
+};
+
+// Map a Reloadly product to Souksnap's internal format
+function mapReloadlyProduct(p) {
+  // Prefer AED (recipient) denominations when currency is AED, else use sender
+  const useRecipient = p.recipientCurrencyCode === 'AED' &&
+                       p.fixedRecipientDenominations?.length;
+  const denoms   = useRecipient
+    ? p.fixedRecipientDenominations
+    : (p.fixedSenderDenominations || []);
+  const currency = useRecipient ? 'AED' : (p.senderCurrencyCode || 'USD');
+
+  return {
+    id:               p.productId,
+    reloadlyId:       p.productId,
+    name:             p.productName,
+    price:            denoms[0] || 0,
+    category:         'digital',
+    img:              p.logoUrls?.[0] || 'https://placehold.co/200x200/f0f0f0/999?text=Gift+Card',
+    denominations:    denoms,
+    denominationType: p.denominationType,       // FIXED or RANGE
+    minDenom:         p.minSenderDenomination,
+    maxDenom:         p.maxSenderDenomination,
+    currency,
+    source:           'reloadly',
+    brand:            p.brand?.brandName || '',
+    categoryName:     p.category?.name  || ''
+  };
+}
+
+// Fetch live gift card products from Reloadly (via backend)
+async function fetchLiveProducts() {
+  try {
+    const data = await api.get('/giftcards/products?countryCode=AE&size=20&page=1');
+    const content = data.content || [];
+    state.liveProducts      = content.map(mapReloadlyProduct);
+    state.liveProductsLoaded = true;
+    console.log(`✅ Loaded ${state.liveProducts.length} live products from Reloadly`);
+
+    // Refresh digital section if user is already on home page
+    if (state.currentPage === 'home') updateHomeDigitalSection();
+    // Refresh digital page if open
+    if (state.currentPage === 'digital') renderDigital();
+
+  } catch (err) {
+    console.warn('⚠️  Live products unavailable, using static data:', err.message);
+    state.liveProductsLoaded = true;
+  }
+}
+
+// Fetch account balance (shown in order summary)
+async function fetchBalance() {
+  try {
+    const data = await api.get('/account/balance');
+    state.accountBalance = data;
+    console.log('💰 Balance:', data.balance, data.currencyCode);
+  } catch (err) {
+    console.warn('⚠️  Balance fetch failed:', err.message);
+  }
+}
+
+// Lookup product in live OR static array
+function findProduct(id) {
+  const numId = Number(id);
+  return state.liveProducts.find(p => p.id === numId)
+      || products.find(p => p.id === numId)
+      || null;
+}
+
+// After live products load, patch just the digital cards on home page
+function updateHomeDigitalSection() {
+  const staticGrid = document.getElementById('digital-static-grid');
+  const mobCarousel = document.getElementById('digital-mob');
+  if (!staticGrid && !mobCarousel) return;
+
+  const prods = (state.liveProducts.length ? state.liveProducts : products.filter(p => p.category === 'digital'))
+                .slice(0, 5);
+
+  const cardHTML = (p, i) => `
+    <div class="digital_card digital_card--${(i % 4) + 1}">
+      <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
+        <figure>
+          <img src="${p.img}" class="img-fluid" alt="${p.name}"
+               onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
+        </figure>
+        <span>${p.name.substring(0, 22)}</span>
+        ${p.source === 'reloadly' ? '<span class="rl-badge">Live</span>' : ''}
+      </a>
+    </div>`;
+
+  if (staticGrid) {
+    staticGrid.innerHTML = prods.map((p, i) =>
+      `<div class="col-lg">${cardHTML(p, i)}</div>`
+    ).join('');
+  }
+
+  if (mobCarousel) {
+    if (typeof $ !== 'undefined' && $(mobCarousel).data('owl.carousel')) {
+      $(mobCarousel).trigger('destroy.owl.carousel');
+    }
+    mobCarousel.innerHTML = prods.map((p, i) =>
+      `<div class="item">${cardHTML(p, i)}</div>`
+    ).join('');
+    if (typeof $ !== 'undefined' && $.fn.owlCarousel) {
+      $(mobCarousel).owlCarousel(getMobOwlOpts());
+    }
+  }
+}
+
+// ── DOM Ready ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderNav();
   navigateTo('home');
   updateCartBadge();
   setupCartDropdown();
+  // Kick off Reloadly data fetch (non-blocking)
+  fetchLiveProducts();
+  fetchBalance();
 });
 
-// ---- Navigation ----
+// ============================================================
+// NAVIGATION
+// ============================================================
+
 function navigateTo(page, data = {}) {
   state.currentPage = page;
 
-  // Update nav active state
   document.querySelectorAll('.nav-inner a').forEach(a => {
     a.classList.toggle('active', a.dataset.page === page);
   });
@@ -57,39 +199,41 @@ function navigateTo(page, data = {}) {
   main.innerHTML = '';
 
   const pages = {
-    'home': renderHome,
-    'about': renderAbout,
-    'digital': renderDigital,
-    'contact': renderContact,
-    'signin': renderSignIn,
-    'signup': renderSignUp,
-    'cart': renderCart,
-    'gift-detail': () => renderGiftDetail(data.productId !== undefined ? products.find(p => p.id === data.productId) : data.product),
-    'search': () => renderSearch(data.query),
+    'home':        renderHome,
+    'about':       renderAbout,
+    'digital':     renderDigital,
+    'contact':     renderContact,
+    'signin':      renderSignIn,
+    'signup':      renderSignUp,
+    'cart':        renderCart,
+    'gift-detail': () => {
+      const product = data.productId !== undefined
+        ? findProduct(data.productId)
+        : data.product;
+      renderGiftDetail(product);
+    },
+    'search':      () => renderSearch(data.query),
   };
 
-  if (pages[page]) {
-    pages[page]();
-  }
-
+  if (pages[page]) pages[page]();
   window.scrollTo(0, 0);
 }
 
-// ---- Header ----
+// ── Nav & Header ─────────────────────────────────────────────
 function renderNav() {
   const navLinks = [
-    { label: 'Home', page: 'home' },
-    { label: 'About Us', page: 'about' },
+    { label: 'Home',         page: 'home' },
+    { label: 'About Us',     page: 'about' },
     { label: 'Digital Card', page: 'digital' },
-    { label: 'Tickets', page: 'digital' },
-    { label: 'Jet Ski', page: 'jetski' },
-    { label: 'Wellness', page: 'wellness' },
-    { label: 'Kids', page: 'kids' },
-    { label: 'Getaways', page: 'getaways' },
+    { label: 'Tickets',      page: 'digital' },
+    { label: 'Jet Ski',      page: 'jetski' },
+    { label: 'Wellness',     page: 'wellness' },
+    { label: 'Kids',         page: 'kids' },
+    { label: 'Getaways',     page: 'getaways' },
     { label: 'Black Friday', page: 'blackfriday' },
-    { label: "Today' Deal", page: 'deals' },
-    { label: 'Supplier', page: 'supplier' },
-    { label: 'Contact Us', page: 'contact' },
+    { label: "Today's Deal", page: 'deals' },
+    { label: 'Supplier',     page: 'supplier' },
+    { label: 'Contact Us',   page: 'contact' },
   ];
 
   document.querySelector('.nav-inner').innerHTML = navLinks.map(l =>
@@ -108,24 +252,20 @@ function updateHeaderUser() {
       <span class="btn-user-name">Hi, ${state.user.name.toUpperCase()}</span>
       <button class="btn-logout" onclick="logout()">LOGOUT</button>
       <div class="cart-wrapper">
-        <div class="cart-btn" onclick="toggleCart()">
-          🛒
+        <div class="cart-btn" onclick="toggleCart()">🛒
           <span class="cart-badge" id="cart-badge">${state.cartItems.length || ''}</span>
         </div>
         <div class="cart-dropdown hidden" id="cart-dropdown"></div>
-      </div>
-    `;
+      </div>`;
   } else {
     actions.innerHTML = `
       <button class="btn-signin" onclick="navigateTo('signin')">SIGN IN</button>
       <div class="cart-wrapper">
-        <div class="cart-btn" onclick="toggleCart()">
-          🛒
+        <div class="cart-btn" onclick="toggleCart()">🛒
           <span class="cart-badge" id="cart-badge">${state.cartItems.length || ''}</span>
         </div>
         <div class="cart-dropdown hidden" id="cart-dropdown"></div>
-      </div>
-    `;
+      </div>`;
   }
 }
 
@@ -144,11 +284,11 @@ function updateCartBadge() {
   }
 }
 
-// ---- Cart Dropdown ----
+// ── Cart dropdown ─────────────────────────────────────────────
 function setupCartDropdown() {
   document.addEventListener('click', (e) => {
     const dropdown = document.getElementById('cart-dropdown');
-    const wrapper = e.target.closest('.cart-wrapper');
+    const wrapper  = e.target.closest('.cart-wrapper');
     if (!wrapper && dropdown && !dropdown.classList.contains('hidden')) {
       dropdown.classList.add('hidden');
       state.cartOpen = false;
@@ -164,11 +304,7 @@ function toggleCart() {
 function renderCartDropdown() {
   const dropdown = document.getElementById('cart-dropdown');
   if (!dropdown) return;
-
-  if (!state.cartOpen) {
-    dropdown.classList.add('hidden');
-    return;
-  }
+  if (!state.cartOpen) { dropdown.classList.add('hidden'); return; }
 
   dropdown.classList.remove('hidden');
 
@@ -177,36 +313,52 @@ function renderCartDropdown() {
     return;
   }
 
-  const total = state.cartItems.reduce((sum, item) => sum + item.price, 0);
-
+  const total = state.cartItems.reduce((sum, i) => sum + i.price, 0);
   dropdown.innerHTML = `
     ${state.cartItems.map(item => `
       <div class="cart-dropdown-item">
         <img src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/60x60/f0f0f0/999?text=IMG'">
         <div class="cart-dropdown-info">
-          <div class="cart-dropdown-name">${item.name.substring(0, 35)}...</div>
-          <div class="cart-dropdown-price">AED ${item.price.toFixed(2)}</div>
+          <div class="cart-dropdown-name">${item.name.substring(0, 35)}…</div>
+          <div class="cart-dropdown-price">${item.currency || 'AED'} ${item.price.toFixed(2)}</div>
         </div>
         <span class="cart-remove-sm" onclick="removeFromCart(${item.id})">🗑️</span>
       </div>
     `).join('')}
     <div class="cart-dropdown-footer">
-      <div class="cart-subtotal">
-        <span>Sub Total</span>
-        <span>AED ${total.toFixed(2)}</span>
-      </div>
+      <div class="cart-subtotal"><span>Sub Total</span><span>AED ${total.toFixed(2)}</span></div>
       <button class="btn-block" onclick="navigateTo('cart');state.cartOpen=false;document.getElementById('cart-dropdown').classList.add('hidden')">VIEW CART</button>
-    </div>
-  `;
+    </div>`;
 }
 
 function addToCart(product) {
-  const exists = state.cartItems.find(i => i.id === product.id);
-  if (!exists) {
-    state.cartItems.push(product);
+  if (typeof product === 'string') {
+    try { product = JSON.parse(product); } catch(e) {}
   }
+  const exists = state.cartItems.find(i => i.id === product.id && i.price === product.price);
+  if (!exists) state.cartItems.push(product);
   updateCartBadge();
-  showToast(`${product.name.substring(0, 30)}... added to cart!`);
+  showToast(`${product.name.substring(0, 30)}… added to cart!`);
+}
+
+// Add product to cart using currently selected denomination
+function addProductToCart(productId) {
+  const product = findProduct(productId);
+  if (!product) return;
+
+  const activeBtn    = document.querySelector('.gd-value-btn.active');
+  const selectedPrice = activeBtn
+    ? parseFloat(activeBtn.dataset.value || product.price)
+    : product.price;
+
+  // If custom amount input visible, read it
+  const customInput = document.getElementById('custom-amount');
+  const finalPrice  = (customInput && customInput.closest('#custom-amount-wrap') &&
+                       customInput.closest('#custom-amount-wrap').style.display !== 'none')
+    ? parseFloat(customInput.value) || selectedPrice
+    : selectedPrice;
+
+  addToCart({ ...product, price: finalPrice });
 }
 
 function removeFromCart(id) {
@@ -216,8 +368,8 @@ function removeFromCart(id) {
   if (state.currentPage === 'cart') renderCart();
 }
 
-// ---- Toast ----
-function showToast(msg) {
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, type = '') {
   let toast = document.getElementById('toast');
   if (!toast) {
     toast = document.createElement('div');
@@ -226,52 +378,86 @@ function showToast(msg) {
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+  toast.className   = `toast show ${type}`;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-// ---- Search ----
+// ── Search ────────────────────────────────────────────────────
 function doSearch(query) {
   if (!query.trim()) return;
   navigateTo('search', { query: query.trim() });
 }
 
-// ---- Product Card HTML ----
+// ── Product card HTML (for grid pages) ───────────────────────
 function productCardHTML(p) {
   return `
     <div class="product-card" style="cursor:pointer;" onclick="navigateTo('gift-detail',{productId:${p.id}})">
-      <img class="product-card-img" src="${p.img}" alt="${p.name}" onerror="this.src='https://placehold.co/200x200/f0f0f0/999?text=IMG'">
+      <img class="product-card-img" src="${p.img}" alt="${p.name}"
+           onerror="this.src='https://placehold.co/200x200/f0f0f0/999?text=IMG'">
       <div class="product-card-body">
+        ${p.source === 'reloadly' ? '<span class="rl-badge" style="margin-bottom:4px;display:inline-block;">Live</span>' : ''}
         <div class="product-card-name">${p.name}</div>
-        <div class="product-card-price"><span>AED</span>${p.price}</div>
+        <div class="product-card-price"><span>AED</span> ${p.price}</div>
       </div>
-    </div>
-  `;
+    </div>`;
+}
+
+// ── Owl carousel options ──────────────────────────────────────
+function getMobOwlOpts() {
+  return {
+    loop: true, margin: 16, nav: false, dots: true,
+    autoplay: true, autoplayTimeout: 3500, autoplayHoverPause: true,
+    responsive: { 0:{items:1}, 480:{items:2}, 576:{items:3}, 768:{items:4} }
+  };
 }
 
 // ============================================================
-// PAGE RENDERS
+// HOME PAGE
 // ============================================================
 
-// ---- HOME ----
 function renderHome() {
   const main        = document.getElementById('main-content');
-  const digitalCards = products.filter(p => p.category === 'digital').slice(0, 5);
+  // Use live products if available, else static
+  const digitalCards = (state.liveProducts.length
+    ? state.liveProducts
+    : products.filter(p => p.category === 'digital')
+  ).slice(0, 5);
+
   const jetskiItems  = products.filter(p => p.category === 'jetski');
   const getaways     = products.filter(p => p.category === 'getaways');
   const wellness     = products.filter(p => p.category === 'wellness');
   const tickets      = products.filter(p => p.category === 'digital').slice(3);
 
+  const giftCardHTML = (p, i) => `
+    <div class="digital_card digital_card--${(i % 4) + 1}">
+      <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
+        <figure>
+          <img src="${p.img}" class="img-fluid" alt="${p.name}"
+               onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
+        </figure>
+        <span>${p.name.substring(0, 22)}</span>
+        ${p.source === 'reloadly' ? '<span class="rl-badge">Live</span>' : ''}
+      </a>
+    </div>`;
+
+  const giftRow = (p, i) => `
+    <div class="gift_card">
+      <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
+        <figure><img src="${p.img}" class="img-fluid" alt="${p.name}"
+             onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Product'"></figure>
+        <div>${p.name.substring(0, 28)}</div>
+        <div class="price"><span>AED</span> ${p.price}</div>
+      </a>
+    </div>`;
+
   main.innerHTML = `
 
-    <!-- ====================================================
-         SECTION 1 — BANNER  background #2b3149
-    ==================================================== -->
+    <!-- ── BANNER ─────────────────────────────────────── -->
     <section class="banner">
       <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="container">
           <div class="carousel-inner">
-
             <div class="carousel-item">
               <div class="row align-items-center">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
@@ -289,7 +475,6 @@ function renderHome() {
                 </div>
               </div>
             </div>
-
             <div class="carousel-item active">
               <div class="row align-items-center">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
@@ -307,67 +492,38 @@ function renderHome() {
                 </div>
               </div>
             </div>
-
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="carousel-control-prev-icon"></span>
           </button>
           <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="carousel-control-next-icon"></span>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SECTION 2 — DIGITAL CARD
-         lg+: 5 static | <lg: carousel 4→3→2→1
-    ==================================================== -->
+    <!-- ── DIGITAL CARDS ─────────────────────────────── -->
     <section class="digital_bg">
       <div class="container">
         <div class="heading_main">
           <div class="heading">Digital <span>Card</span></div>
+          ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
-        <!-- Static grid — lg and above -->
-        <div class="row g-3 justify-content-center d-none d-lg-flex">
-          ${digitalCards.map((p, i) => `
-            <div class="col-lg">
-              <div class="digital_card digital_card--${(i % 4) + 1}">
-                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                  <figure>
-                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                         onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
-                  </figure>
-                  ${p.name.substring(0, 20)}
-                </a>
-              </div>
-            </div>
-          `).join('')}
+        <!-- Static grid — lg+ -->
+        <div class="row g-3 justify-content-center d-none d-lg-flex" id="digital-static-grid">
+          ${digitalCards.map((p, i) => `<div class="col-lg">${giftCardHTML(p, i)}</div>`).join('')}
         </div>
         <!-- Carousel — below lg -->
         <div class="d-lg-none">
           <div id="digital-mob" class="owl-carousel owl-theme">
-            ${digitalCards.map((p, i) => `
-              <div class="item">
-                <div class="digital_card digital_card--${(i % 4) + 1}">
-                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                    <figure>
-                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
-                    </figure>
-                    ${p.name.substring(0, 20)}
-                  </a>
-                </div>
-              </div>
-            `).join('')}
+            ${digitalCards.map((p, i) => `<div class="item">${giftCardHTML(p, i)}</div>`).join('')}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SECTION 3 — WHAT'S TRENDING  (heading only, no products)
-    ==================================================== -->
+    <!-- ── TRENDING ──────────────────────────────────── -->
     <section class="trending_bg">
       <div class="container">
         <div class="heading_main">
@@ -376,51 +532,24 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- ====================================================
-         SECTION 4 — JET SKI DEALS
-         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
-    ==================================================== -->
+    <!-- ── JET SKI ────────────────────────────────────── -->
     <section class="py-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
         </div>
-        <!-- Static grid — lg and above -->
         <div class="row g-4 d-none d-lg-flex">
-          ${jetskiItems.slice(0, 5).map((p, i) => `
-            <div class="col-lg">
-              <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
-                  <div>${p.name.substring(0, 20)}</div>
-                  <div class="price"><span>AED</span> ${p.price}</div>
-                </a>
-              </div>
-            </div>
-          `).join('')}
+          ${jetskiItems.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
         </div>
-        <!-- Carousel — below lg -->
         <div class="d-lg-none">
           <div id="jet-mob" class="owl-carousel owl-theme">
-            ${jetskiItems.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
-              </div>
-            `).join('')}
+            ${jetskiItems.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SECTION 5 — AD BANNER (Bootstrap carousel)
-    ==================================================== -->
+    <!-- ── AD BANNER ──────────────────────────────────── -->
     <section class="add_banner">
       <div class="container">
         <div id="addCarousel" class="carousel slide pointer-event" data-bs-ride="carousel">
@@ -434,61 +563,30 @@ function renderHome() {
                    onerror="this.src='https://placehold.co/1200x200/f84464/fff?text=Special+Offer'">
             </div>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#addCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#addCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          </button>
+          <button class="carousel-control-prev" type="button" data-bs-target="#addCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+          <button class="carousel-control-next" type="button" data-bs-target="#addCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SECTION 6 — GETAWAYS
-         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
-    ==================================================== -->
+    <!-- ── GETAWAYS ───────────────────────────────────── -->
     <section class="pb-0 pt-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
         </div>
-        <!-- Static grid — lg and above -->
         <div class="row g-4 d-none d-lg-flex">
-          ${getaways.slice(0, 5).map((p, i) => `
-            <div class="col-lg">
-              <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
-                  <div>${p.name.substring(0, 20)}</div>
-                  <div class="price"><span>AED</span> ${p.price}</div>
-                </a>
-              </div>
-            </div>
-          `).join('')}
+          ${getaways.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
         </div>
-        <!-- Carousel — below lg -->
         <div class="d-lg-none">
           <div id="getaways-mob" class="owl-carousel owl-theme">
-            ${getaways.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
-              </div>
-            `).join('')}
+            ${getaways.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         GIFT WHENEVER SECTION
-    ==================================================== -->
+    <!-- ── GIFT/ABOUT ─────────────────────────────────── -->
     <section class="about_bg">
       <div class="curv_top">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="-380" r="400" fill="white" stroke="white"></circle></svg>
@@ -516,123 +614,56 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- ====================================================
-         WELLNESS
-         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
-    ==================================================== -->
+    <!-- ── WELLNESS ───────────────────────────────────── -->
     <section class="pt-0 pb-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Wellness</div>
         </div>
-        <!-- Static grid — lg and above -->
         <div class="row g-4 d-none d-lg-flex">
-          ${wellness.slice(0, 5).map((p, i) => `
-            <div class="col-lg">
-              <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
-                  <div>${p.name.substring(0, 20)}</div>
-                  <div class="price"><span>AED</span> ${p.price}</div>
-                </a>
-              </div>
-            </div>
-          `).join('')}
+          ${wellness.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
         </div>
-        <!-- Carousel — below lg -->
         <div class="d-lg-none">
           <div id="wellness-mob" class="owl-carousel owl-theme">
-            ${wellness.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
-              </div>
-            `).join('')}
+            ${wellness.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         TICKETS
-         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
-    ==================================================== -->
+    <!-- ── TICKETS ────────────────────────────────────── -->
     <section class="gray_bg py-5" style="background:#f9f8f8;">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Tickets</div>
         </div>
-        <!-- Static grid — lg and above -->
         <div class="row g-4 d-none d-lg-flex">
-          ${tickets.slice(0, 5).map((p, i) => `
-            <div class="col-lg">
-              <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
-                  <div>${p.name.substring(0, 20)}</div>
-                  <div class="price"><span>AED</span> ${p.price}</div>
-                </a>
-              </div>
-            </div>
-          `).join('')}
+          ${tickets.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
         </div>
-        <!-- Carousel — below lg -->
         <div class="d-lg-none">
           <div id="ticket-mob" class="owl-carousel owl-theme">
-            ${tickets.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
-                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
-              </div>
-            `).join('')}
+            ${tickets.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GRAB OFFER -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="heading">Grab Offer <span>Beauty</span></h2>
-        </div>
-      </div>
-    </section>
-
-    <!-- WHAT'S WAITING -->
-    <section class="section waiting-for-you" style="background: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgb(255, 237, 239) 100%);">
+    <!-- ── WHAT'S WAITING ─────────────────────────────── -->
+    <section class="section waiting-for-you" style="background:linear-gradient(0deg,#fff 0%,#ffedef 100%);">
       <div class="section-inner">
         <div class="section-header">
           <h2 class="heading">What's <span>Waiting for You</span></h2>
-    <!-- ====================================================
-         WHAT'S WAITING FOR YOU
-    ==================================================== -->
-
         </div>
         <div class="row justify-content-center">
-
-          <!-- Left column -->
           <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <div class="waiting_row">
               <div class="waiting" onclick="navigateTo('digital')">
                 <figure><img src="https://souksnap.com/images/digital-card-icon.png" class="img-fluid" alt="Digital Card" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💳'"></figure>
                 Digital Card
               </div>
-
               <div class="waiting" onclick="navigateTo('digital')">
                 <figure><img src="https://souksnap.com/images/ticket-icon.png" class="img-fluid" alt="Tickets" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎟'"></figure>
                 Tickets
-
               </div>
               <div class="waiting" onclick="navigateTo('jetski')">
                 <figure><img src="https://souksnap.com/images/jet-ski-icon.png" class="img-fluid" alt="Jet Ski" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🛥'"></figure>
@@ -644,16 +675,12 @@ function renderHome() {
               </div>
             </div>
           </div>
-
-          <!-- Center phone image -->
           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div class="waiting_center">
               <img src="https://souksnap.com/images/mobile-fun.png" class="img-fluid" alt="Mobile App"
                    onerror="this.src='https://placehold.co/320x560/1a1a2e/ffffff?text=App'">
             </div>
           </div>
-
-          <!-- Right column -->
           <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <div class="waiting_row">
               <div class="waiting" onclick="navigateTo('digital')">
@@ -674,7 +701,6 @@ function renderHome() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
@@ -683,298 +709,162 @@ function renderHome() {
   initHomeCarousels();
 }
 
-// ---- Carousel Init ----
+// ── Carousel Init ─────────────────────────────────────────────
 function initHomeCarousels() {
-  // Bootstrap – Banner
   const bannerEl = document.getElementById('bannerCarousel');
   if (bannerEl && typeof bootstrap !== 'undefined') {
     new bootstrap.Carousel(bannerEl, { interval: 5000, ride: 'carousel' });
   }
-
-  // Bootstrap – Ad Banner
   const addEl = document.getElementById('addCarousel');
   if (addEl && typeof bootstrap !== 'undefined') {
     new bootstrap.Carousel(addEl, { interval: 4000, ride: 'carousel' });
   }
-
-  // Owl Carousel – Jet Ski & Getaways
   if (typeof $ !== 'undefined' && $.fn && $.fn.owlCarousel) {
-    const owlOpts = {
-      loop: true,
-      margin: 20,
-      nav: false,
-      dots: true,
-      autoplay: true,
-      autoplayTimeout: 3500,
-      autoplayHoverPause: true,
-      responsive: {
-        0:    { items: 1 },
-        576:  { items: 2 },
-        768:  { items: 3 },
-        992:  { items: 4 }
-      }
-    };
-    // Responsive carousels (active below lg): 4→3→2→1
-    const mobOpts = {
-      loop: true,
-      margin: 16,
-      nav: false,
-      dots: true,
-      autoplay: true,
-      autoplayTimeout: 3500,
-      autoplayHoverPause: true,
-      responsive: {
-        0:   { items: 1 },   // xs
-        480: { items: 2 },   // xs→sm
-        576: { items: 3 },   // sm
-        768: { items: 4 }    // md (lg+ uses static grid)
-      }
-    };
-    $('#digital-mob').owlCarousel(mobOpts);
-    $('#jet-mob').owlCarousel(mobOpts);
-    $('#getaways-mob').owlCarousel(mobOpts);
-    $('#wellness-mob').owlCarousel(mobOpts);
-    $('#ticket-mob').owlCarousel(mobOpts);
+    const opts = getMobOwlOpts();
+    $('#digital-mob').owlCarousel(opts);
+    $('#jet-mob').owlCarousel(opts);
+    $('#getaways-mob').owlCarousel(opts);
+    $('#wellness-mob').owlCarousel(opts);
+    $('#ticket-mob').owlCarousel(opts);
   }
 }
 
-// ---- ABOUT ----
+// ============================================================
+// ABOUT
+// ============================================================
+
 function renderAbout() {
   const main = document.getElementById('main-content');
   main.innerHTML = `
     <section class="page-hero-dark">
       <h1>About Us</h1>
-      <p>Wellness Within LLC - FZ is more than just an e-commerce platform—we're a digital marketplace built on trust, innovation, and convenience. Founded in 2023, we started with a bold vision: to make online shopping simple, affordable, and accessible for everyone, everywhere.</p>
-      <p style="margin-top:16px;">From our humble beginnings in Dubai, we have rapidly grown into a globally connected business serving diverse markets with a curated range of products—from everyday essentials to lifestyle innovations.</p>
+      <p>Wellness Within LLC - FZ is more than just an e-commerce platform—we're a digital marketplace built on trust, innovation, and convenience.</p>
+      <p style="margin-top:16px;">From our humble beginnings in Dubai, we have rapidly grown into a globally connected business serving diverse markets.</p>
     </section>
-
     <section class="about-section">
       <div class="about-grid">
         <div>
           <h2>Our Growth Journey</h2>
           <p>We began our journey in 2023, operating out of a single office in Jumeirah Lake Towers (JLT), Dubai. With a focus on seamless shopping experiences and dependable service, we quickly gained traction in the UAE's fast-growing e-commerce space.</p>
-          <p>Driven by customer satisfaction and smart logistics, we scaled our operations and built strong partnerships with reliable vendors and delivery partners. Our platform evolved to support thousands of daily visitors and an expanding product catalog across multiple categories.</p>
         </div>
-        <div class="about-img" style="background: linear-gradient(135deg, #e8f4f8, #fdeef1);">
+        <div class="about-img" style="background:linear-gradient(135deg,#e8f4f8,#fdeef1);">
           <img src="https://placehold.co/460x300/e8f4f8/333?text=Team+Meeting" alt="Team" style="border-radius:12px;width:100%;height:300px;object-fit:cover;">
         </div>
       </div>
     </section>
-
     <div class="about-text-section">
-      <h2>Global Expansion</h2>
-      <p>In response to increasing regional demand and supplier interest, we expanded our footprint beyond the UAE. In 2025, we proudly opened our second international office in Makati City, Metro Manila, Philippines, solidifying our presence in Southeast Asia and enhancing our cross-border logistics capability.</p>
-      <p>Today, Wellness Within LLC - FZ continues to push boundaries with a global mindset, local service, and scalable infrastructure that supports long-term growth across international markets.</p>
-
       <h2>Our Mission</h2>
       <p>To redefine digital retail by delivering a personalized, transparent, and value-driven shopping experience for customers around the world.</p>
-
       <h2>Our Presence</h2>
       <div class="presence-grid">
-        <div class="presence-card">
-          <h4>Dubai, UAE (Headquarters)</h4>
-          <p>Office# 3402, Dome Tower, Cluster N, JLT</p>
-        </div>
-        <div class="presence-card">
-          <h4>Manila, Philippines (Southeast Asia Office)</h4>
-          <p>Unit 1503, Tower One, Ayala Triangle, Makati City, Metro Manila 1226</p>
-        </div>
+        <div class="presence-card"><h4>Dubai, UAE (Headquarters)</h4><p>Office# 3402, Dome Tower, Cluster N, JLT</p></div>
+        <div class="presence-card"><h4>Manila, Philippines</h4><p>Unit 1503, Tower One, Ayala Triangle, Makati City</p></div>
       </div>
-
-      <h2>What We Offer</h2>
-      <div class="what-we-offer">
-        <ul>
-          <li>A wide range of high-quality, affordable products</li>
-          <li>Fast and reliable delivery services</li>
-          <li>Secure checkout and flexible payment options</li>
-          <li>24/7 customer support and easy return policies</li>
-        </ul>
-      </div>
-
-      <div style="margin-top:40px;padding:28px;background:var(--dark-footer);border-radius:12px;text-align:center;">
-        <p style="font-size:17px;font-weight:700;color:white;margin-bottom:8px;">At Wellness Within LLC - FZ, we're not just selling products—we're building lasting relationships.</p>
-        <p style="color:rgba(255,255,255,0.6);margin:0;">Join us as we grow, innovate, and shape the future of online retail.</p>
-      </div>
-    </div>
-  `;
+    </div>`;
 }
 
-// ---- DIGITAL CARD ----
+// ============================================================
+// DIGITAL CARD PAGE
+// ============================================================
+
 function renderDigital() {
   const main = document.getElementById('main-content');
-  const digitalProducts = products.filter(p => p.category === 'digital');
+  // Combine live products + static non-digital products
+  const digitalProducts = state.liveProducts.length
+    ? state.liveProducts
+    : products.filter(p => p.category === 'digital');
 
   main.innerHTML = `
     <div class="section-inner">
-      <div class="page-title-bar">
+      <div class="page-title-bar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <h1>Digital Card</h1>
+        ${state.accountBalance ? `
+          <div class="rl-balance-badge">
+            💰 Balance: <strong>${state.accountBalance.balance} ${state.accountBalance.currencyCode}</strong>
+          </div>` : ''}
       </div>
-      <div class="products-grid" style="margin-bottom: 48px;">
-        ${digitalProducts.map(p => productCardHTML(p)).join('')}
-      </div>
-    </div>
-  `;
+      ${!state.liveProductsLoaded ? `
+        <div class="rl-loading" style="margin:40px auto;"><span class="rl-spinner"></span> Loading live gift cards from Reloadly…</div>
+      ` : `
+        <div class="products-grid" style="margin-bottom:48px;">
+          ${digitalProducts.map(p => productCardHTML(p)).join('')}
+        </div>
+      `}
+    </div>`;
 }
 
-// ---- CONTACT ----
+// ============================================================
+// CONTACT
+// ============================================================
+
 function renderContact() {
   const main = document.getElementById('main-content');
   main.innerHTML = `
     <div class="contact-page">
-      <h1>We're <s>Here to Help</s> – Anytime, Anywhere.</h1>
-      <p class="subtitle">At Wellness Within, your satisfaction and well-being are at the heart of everything we do. Whether you have a question about your order, need support with a product, or are interested in partnering with us—we'd love to hear from you.</p>
-
+      <h1>We're Here to Help – Anytime, Anywhere.</h1>
+      <p class="subtitle">Whether you have a question about your order, need support with a product, or are interested in partnering with us—we'd love to hear from you.</p>
       <div class="contact-layout">
         <div>
           <div class="contact-info-card">
             <h3>Our Contact Details</h3>
-
-            <div style="margin-bottom:20px;">
-              <strong style="font-size:14px;display:block;margin-bottom:12px;">Head Office – United Arab Emirates</strong>
-              <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Wellness Within LLC – FZ</p>
-
-              <div class="contact-detail-row">
-                <div class="contact-detail-icon">📍</div>
-                <div>
-                  <p>Address</p>
-                  <strong>Office #3402, Dome Tower, Cluster N, JLT, Dubai, UAE</strong>
-                </div>
-              </div>
-              <div class="contact-detail-row">
-                <div class="contact-detail-icon">✉️</div>
-                <div>
-                  <p>Email</p>
-                  <strong>support@souksnap.com</strong>
-                </div>
-              </div>
-              <div class="contact-detail-row">
-                <div class="contact-detail-icon">📞</div>
-                <div>
-                  <p>Phone</p>
-                  <strong>+971 582096944</strong>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <strong style="font-size:14px;display:block;margin-bottom:12px;">Southeast Asia Office – Philippines</strong>
-              <div class="contact-detail-row">
-                <div class="contact-detail-icon">📍</div>
-                <div>
-                  <p>Address</p>
-                  <strong>Unit 1503, Tower One, Ayala Triangle, Makati City, Metro Manila 1226</strong>
-                </div>
-              </div>
-              <div class="contact-detail-row">
-                <div class="contact-detail-icon">📞</div>
-                <div>
-                  <p>Phone</p>
-                  <strong>+63 (2) 8XXX XXXX</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;">
-            <h4 style="font-size:20px;font-weight:700;margin-bottom:8px;">Let's Stay Connected</h4>
-            <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Follow us on social media to stay updated with our latest deals, product launches, and announcements:</p>
-            <div class="social-row">
-              <a href="#" class="social-link" style="background:#1877f2;">f</a>
-              <a href="#" class="social-link" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">📷</a>
-              <a href="#" class="social-link" style="background:#1da1f2;">🐦</a>
-              <a href="#" class="social-link" style="background:#0077b5;">in</a>
-            </div>
+            <div class="contact-detail-row"><div class="contact-detail-icon">📍</div><div><p>Address</p><strong>Office #3402, Dome Tower, Cluster N, JLT, Dubai, UAE</strong></div></div>
+            <div class="contact-detail-row"><div class="contact-detail-icon">✉️</div><div><p>Email</p><strong>support@souksnap.com</strong></div></div>
+            <div class="contact-detail-row"><div class="contact-detail-icon">📞</div><div><p>Phone</p><strong>+971 582096944</strong></div></div>
           </div>
         </div>
-
         <div class="message-form">
           <h3>Send Us a Message</h3>
-          <p>Your email address will not be published. Required fields are marked *</p>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Full Name" id="contact-name" required>
-          </div>
-          <div class="form-group">
-            <input type="email" class="form-control" placeholder="Email Address" id="contact-email" required>
-          </div>
-          <div class="form-group">
-            <input type="tel" class="form-control" placeholder="Mobile Number" id="contact-phone">
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Subject" id="contact-subject" required>
-          </div>
-          <div class="form-group">
-            <textarea class="form-control" placeholder="Message" id="contact-message" rows="4" required></textarea>
-          </div>
+          <div class="form-group"><input type="text" class="form-control" placeholder="Full Name" id="contact-name" required></div>
+          <div class="form-group"><input type="email" class="form-control" placeholder="Email Address" id="contact-email" required></div>
+          <div class="form-group"><input type="tel" class="form-control" placeholder="Mobile Number" id="contact-phone"></div>
+          <div class="form-group"><input type="text" class="form-control" placeholder="Subject" id="contact-subject" required></div>
+          <div class="form-group"><textarea class="form-control" placeholder="Message" id="contact-message" rows="4" required></textarea></div>
           <button class="btn-block" onclick="submitContactForm()">SUBMIT</button>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function submitContactForm() {
-  const name = document.getElementById('contact-name').value;
-  const email = document.getElementById('contact-email').value;
+  const name    = document.getElementById('contact-name').value;
+  const email   = document.getElementById('contact-email').value;
   const subject = document.getElementById('contact-subject').value;
   const message = document.getElementById('contact-message').value;
-
   if (!name || !email || !subject || !message) {
     showToast('Please fill in all required fields.');
     return;
   }
-
-  showToast('Message sent! We\'ll get back to you soon.');
-  document.getElementById('contact-name').value = '';
-  document.getElementById('contact-email').value = '';
-  document.getElementById('contact-phone').value = '';
-  document.getElementById('contact-subject').value = '';
-  document.getElementById('contact-message').value = '';
+  showToast("Message sent! We'll get back to you soon.");
+  ['contact-name','contact-email','contact-phone','contact-subject','contact-message']
+    .forEach(id => document.getElementById(id).value = '');
 }
 
-// ---- SIGN IN ----
+// ============================================================
+// SIGN IN / SIGN UP
+// ============================================================
+
 function renderSignIn() {
   const main = document.getElementById('main-content');
   main.innerHTML = `
     <div class="auth-page">
       <div class="auth-card">
         <h2>Sign In</h2>
-
-        <div class="form-group">
-          <input type="text" class="form-control light" placeholder="Email or Phone" id="signin-email">
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control light" placeholder="Password" id="signin-password">
-        </div>
-
+        <div class="form-group"><input type="text" class="form-control light" placeholder="Email or Phone" id="signin-email"></div>
+        <div class="form-group"><input type="password" class="form-control light" placeholder="Password" id="signin-password"></div>
         <div class="checkbox-row">
-          <label class="checkbox-label">
-            <input type="checkbox" id="remember-me">
-            Remember Me
-          </label>
+          <label class="checkbox-label"><input type="checkbox" id="remember-me"> Remember Me</label>
           <a href="#" class="forgot-link">Forgot Your Password?</a>
         </div>
-
         <button class="btn-block" onclick="submitSignIn()">SIGN IN</button>
-
-        <div class="auth-footer">
-          Don't have an account? <a href="#" onclick="navigateTo('signup');return false;">Sign Up</a>
-        </div>
+        <div class="auth-footer">Don't have an account? <a href="#" onclick="navigateTo('signup');return false;">Sign Up</a></div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function submitSignIn() {
-  const email = document.getElementById('signin-email').value;
+  const email    = document.getElementById('signin-email').value;
   const password = document.getElementById('signin-password').value;
-
-  if (!email || !password) {
-    showToast('Please enter your email and password.');
-    return;
-  }
-
-  // Simulate sign-in
+  if (!email || !password) { showToast('Please enter your email and password.'); return; }
   const name = email.includes('@') ? email.split('@')[0] : email;
   state.user = { name: name.charAt(0).toUpperCase() + name.slice(1), email };
   updateHeaderUser();
@@ -982,43 +872,22 @@ function submitSignIn() {
   navigateTo('home');
 }
 
-// ---- SIGN UP ----
 function renderSignUp() {
   const main = document.getElementById('main-content');
   main.innerHTML = `
     <div class="auth-page">
       <div class="auth-card">
         <h2>Sign Up</h2>
-
         <div class="auth-form-row">
-          <div class="form-group">
-            <input type="text" class="form-control light" placeholder="Full Name" id="signup-name">
-          </div>
-          <div class="form-group">
-            <div class="phone-input-group">
-              <button class="phone-flag" type="button">🇮🇳 +91 ▾</button>
-              <input type="tel" class="form-control light" placeholder="Phone Number" id="signup-phone">
-            </div>
-          </div>
+          <div class="form-group"><input type="text" class="form-control light" placeholder="Full Name" id="signup-name"></div>
+          <div class="form-group"><input type="tel" class="form-control light" placeholder="Phone Number" id="signup-phone"></div>
         </div>
-
-        <div class="form-group">
-          <input type="email" class="form-control light" placeholder="Email" id="signup-email">
-        </div>
-
+        <div class="form-group"><input type="email" class="form-control light" placeholder="Email" id="signup-email"></div>
         <div class="form-row-2">
-          <div class="form-group">
-            <input type="password" class="form-control light" placeholder="Password" id="signup-password">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control light" placeholder="Confirm Password" id="signup-confirm">
-          </div>
+          <div class="form-group"><input type="password" class="form-control light" placeholder="Password" id="signup-password"></div>
+          <div class="form-group"><input type="password" class="form-control light" placeholder="Confirm Password" id="signup-confirm"></div>
         </div>
-
-        <div class="form-group">
-          <input type="text" class="form-control light" placeholder="Address" id="signup-address">
-        </div>
-
+        <div class="form-group"><input type="text" class="form-control light" placeholder="Address" id="signup-address"></div>
         <div class="form-row-3">
           <div class="form-group">
             <select class="form-control light" id="signup-country">
@@ -1026,60 +895,38 @@ function renderSignUp() {
               <option value="AE">United Arab Emirates</option>
               <option value="SA">Saudi Arabia</option>
               <option value="IN">India</option>
-              <option value="PK">Pakistan</option>
               <option value="PH">Philippines</option>
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
             </select>
           </div>
-          <div class="form-group">
-            <input type="text" class="form-control light" placeholder="City" id="signup-city">
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control light" placeholder="Postal Code" id="signup-postal">
-          </div>
+          <div class="form-group"><input type="text" class="form-control light" placeholder="City" id="signup-city"></div>
+          <div class="form-group"><input type="text" class="form-control light" placeholder="Postal Code" id="signup-postal"></div>
         </div>
-
         <button class="btn-block" onclick="submitSignUp()">SIGN UP</button>
-
-        <div class="auth-footer">
-          Already have an account? <a href="#" onclick="navigateTo('signin');return false;">Sign In</a>
-        </div>
+        <div class="auth-footer">Already have an account? <a href="#" onclick="navigateTo('signin');return false;">Sign In</a></div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function submitSignUp() {
-  const name = document.getElementById('signup-name').value;
-  const email = document.getElementById('signup-email').value;
+  const name     = document.getElementById('signup-name').value;
+  const email    = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
-  const confirm = document.getElementById('signup-confirm').value;
-
-  if (!name || !email || !password || !confirm) {
-    showToast('Please fill in all required fields.');
-    return;
-  }
-
-  if (password !== confirm) {
-    showToast('Passwords do not match!');
-    return;
-  }
-
-  if (password.length < 6) {
-    showToast('Password must be at least 6 characters.');
-    return;
-  }
-
+  const confirm  = document.getElementById('signup-confirm').value;
+  if (!name || !email || !password || !confirm) { showToast('Please fill in all required fields.'); return; }
+  if (password !== confirm) { showToast('Passwords do not match!'); return; }
+  if (password.length < 6)  { showToast('Password must be at least 6 characters.'); return; }
   state.user = { name, email };
   updateHeaderUser();
   showToast(`Welcome to Souksnap, ${name}!`);
   navigateTo('home');
 }
 
-// ---- CART ----
+// ============================================================
+// CART
+// ============================================================
+
 function renderCart() {
-  const main = document.getElementById('main-content');
+  const main  = document.getElementById('main-content');
   const total = state.cartItems.reduce((sum, i) => sum + i.price, 0);
 
   main.innerHTML = `
@@ -1104,9 +951,10 @@ function renderCart() {
                      onerror="this.src='https://placehold.co/90x90/f0f0f0/999?text=IMG'">
                 <div class="cart-item-info">
                   <div class="cart-item-name">${item.name}</div>
+                  ${item.source === 'reloadly' ? '<span class="rl-badge">Reloadly Live</span>' : ''}
                   <div class="cart-item-price-row">
-                    <span class="cart-aed">AED</span>
-                    <span class="cart-price-num">${item.price}</span>
+                    <span class="cart-aed">${item.currency || 'AED'}</span>
+                    <span class="cart-price-num">${item.price.toFixed(2)}</span>
                   </div>
                 </div>
                 <button class="cart-remove-btn" onclick="removeFromCart(${item.id})" title="Remove">✕</button>
@@ -1118,16 +966,21 @@ function renderCart() {
           <div class="col-lg-4">
             <div class="order-summary-card">
               <h3 class="order-summary-title">Order Summary</h3>
+              ${state.accountBalance ? `
+                <div class="order-row-item" style="font-size:13px;color:#888;">
+                  <span>Wallet Balance</span>
+                  <span>${state.accountBalance.balance} ${state.accountBalance.currencyCode}</span>
+                </div>` : ''}
               <div class="order-row-item">
                 <span>Order Total</span>
-                <span>AED <strong>${total}</strong></span>
+                <span>AED <strong>${total.toFixed(2)}</strong></span>
               </div>
               <div class="order-divider"></div>
               <div class="order-row-item order-total-row">
                 <span>Total Amount</span>
-                <span>AED <strong>${total}</strong></span>
+                <span>AED <strong>${total.toFixed(2)}</strong></span>
               </div>
-              <button class="gd-cart-btn" style="margin-top:24px;"
+              <button class="gd-cart-btn" id="checkout-btn" style="margin-top:24px;"
                 onclick="checkout()"
                 ${state.cartItems.length === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
                 BUY NOW
@@ -1137,26 +990,140 @@ function renderCart() {
 
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function checkout() {
+// ── Checkout (places real Reloadly orders) ───────────────────
+async function checkout() {
   if (!state.user) {
     showToast('Please sign in to complete your purchase.');
     navigateTo('signin');
     return;
   }
-  showToast('Order placed successfully! Thank you for shopping with Souksnap.');
-  state.cartItems = [];
-  updateCartBadge();
-  renderCart();
+  if (state.cartItems.length === 0) return;
+
+  const btn = document.getElementById('checkout-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+
+  const reloadlyItems = state.cartItems.filter(i => i.source === 'reloadly');
+  const staticItems   = state.cartItems.filter(i => i.source !== 'reloadly');
+  const orders = [];
+
+  try {
+    // ── Place Reloadly orders ──────────────────────────────
+    for (const item of reloadlyItems) {
+      const payload = {
+        productId:        item.reloadlyId,
+        quantity:         1,
+        unitPrice:        item.price,
+        customIdentifier: `souksnap-${state.user.email}-${Date.now()}`,
+        senderName:       state.user.name,
+        recipientEmail:   state.user.email
+      };
+      showToast(`Ordering ${item.name.substring(0, 25)}…`);
+      const result = await api.post('/giftcards/order', payload);
+      orders.push(result);
+      console.log('✅ Reloadly order:', result);
+    }
+
+    // ── Static items — simulate ────────────────────────────
+    if (staticItems.length) {
+      await new Promise(r => setTimeout(r, 600));
+      orders.push(...staticItems.map(i => ({ simulated: true, product: i.name })));
+    }
+
+    // ── Success ────────────────────────────────────────────
+    state.cartItems = [];
+    updateCartBadge();
+    renderOrderConfirmation(orders);
+    showToast('🎉 Order placed! Check your email for gift codes.', 'success');
+
+  } catch (err) {
+    console.error('Checkout error:', err);
+    showToast(`❌ Order failed: ${err.message}`, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'BUY NOW'; }
+  }
 }
 
-// ---- GIFT DETAIL ----
-function renderGiftDetail(productJson) {
-  const product = typeof productJson === 'string' ? JSON.parse(productJson) : productJson;
+// ── Order confirmation screen ────────────────────────────────
+function renderOrderConfirmation(orders) {
   const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <div class="cart-page">
+      <div class="container py-5" style="max-width:680px;">
+        <div class="order-summary-card" style="text-align:center;padding:48px 32px;">
+          <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+          <h2 style="font-weight:700;margin-bottom:8px;">Order Confirmed!</h2>
+          <p style="color:#666;margin-bottom:32px;">Thank you, <strong>${state.user?.name || 'Customer'}</strong>!<br>
+          Your gift card code(s) will be sent to <strong>${state.user?.email || ''}</strong>.</p>
+
+          ${orders.filter(o => o.transactionId).map(o => `
+            <div class="cart-item-card" style="text-align:left;margin-bottom:12px;">
+              <div class="cart-item-info">
+                <div class="cart-item-name">Transaction #${o.transactionId}</div>
+                <div style="font-size:13px;color:#888;margin-top:4px;">Status: <strong style="color:#27ae60;">${o.status || 'PROCESSING'}</strong></div>
+                ${o.cards?.length ? `<div style="margin-top:8px;font-size:14px;">🎁 Code: <code style="background:#f5f5f5;padding:2px 8px;border-radius:4px;">${o.cards[0].cardNumber}</code></div>` : ''}
+              </div>
+            </div>`).join('')}
+
+          <button class="gd-cart-btn" style="max-width:240px;margin:0 auto;" onclick="navigateTo('home')">
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// PRODUCT DETAIL PAGE
+// ============================================================
+
+function renderGiftDetail(product) {
+  if (!product) {
+    const main = document.getElementById('main-content');
+    main.innerHTML = `<div style="text-align:center;padding:80px 20px;"><h2>Product not found</h2><button class="gd-cart-btn" style="margin-top:20px;max-width:200px;" onclick="navigateTo('home')">Back to Home</button></div>`;
+    return;
+  }
+
+  const main = document.getElementById('main-content');
+
+  // Build denomination buttons
+  let denomSection = '';
+  if (product.denominations && product.denominations.length > 0) {
+    denomSection = `
+      <div class="gd-section">
+        <h3 class="gd-section-title">Select card value</h3>
+        <div class="gd-value-options" style="flex-wrap:wrap;">
+          ${product.denominations.map((d, i) => `
+            <button class="gd-value-btn ${i === 0 ? 'active' : ''}"
+                    data-value="${d}"
+                    onclick="selectValue(this, ${d})">
+              ${product.currency || 'AED'} ${d}
+            </button>`).join('')}
+        </div>
+      </div>`;
+  } else if (product.denominationType === 'RANGE') {
+    denomSection = `
+      <div class="gd-section">
+        <h3 class="gd-section-title">Enter amount (${product.currency || 'AED'} ${product.minDenom}–${product.maxDenom})</h3>
+        <input type="number" class="gd-input" id="custom-amount"
+               value="${product.price}" min="${product.minDenom}" max="${product.maxDenom}" step="1"
+               style="max-width:200px;">
+      </div>`;
+  } else {
+    denomSection = `
+      <div class="gd-section">
+        <h3 class="gd-section-title">Select card value</h3>
+        <div class="gd-value-options">
+          <button class="gd-value-btn active" data-value="${product.price}" onclick="selectValue(this,${product.price})">
+            AED ${product.price}
+          </button>
+        </div>
+        <div id="custom-amount-wrap" style="display:none;margin-top:12px;">
+          <input type="number" class="gd-input" placeholder="Custom Amount" id="custom-amount" min="10" step="10">
+        </div>
+      </div>`;
+  }
 
   main.innerHTML = `
     <div class="gd-page">
@@ -1168,6 +1135,10 @@ function renderGiftDetail(productJson) {
             <div class="gd-img-card">
               <img src="${product.img}" alt="${product.name}"
                    onerror="this.src='https://placehold.co/420x380/f0f0f0/999?text=Product'">
+              ${product.source === 'reloadly' ? `
+                <div class="rl-live-tag">
+                  <span class="rl-badge" style="font-size:12px;padding:4px 10px;">⚡ Live via Reloadly</span>
+                </div>` : ''}
             </div>
           </div>
 
@@ -1176,19 +1147,9 @@ function renderGiftDetail(productJson) {
             <div class="gd-info-card">
 
               <h1 class="gd-title">${product.name}</h1>
-              <p class="gd-subtitle">EPAY C2C XSX/XB1 EA Sports FC 24 Ultimate Edition (AE)</p>
+              ${product.brand ? `<p class="gd-subtitle">${product.brand}${product.categoryName ? ' · ' + product.categoryName : ''}</p>` : ''}
 
-              <!-- Card Value -->
-              <div class="gd-section">
-                <h3 class="gd-section-title">Select card value</h3>
-                <div class="gd-value-options">
-                  <button class="gd-value-btn active" onclick="selectValue(this, ${product.price})">AED ${product.price}</button>
-                  <button class="gd-value-btn" onclick="selectValue(this, 0)">Other</button>
-                </div>
-                <div id="custom-amount-wrap" style="display:none;margin-top:12px;">
-                  <input type="number" class="gd-input" placeholder="Custom Amount" id="custom-amount" min="10" step="10">
-                </div>
-              </div>
+              ${denomSection}
 
               <!-- Tabs -->
               <div class="gd-tabs">
@@ -1197,18 +1158,18 @@ function renderGiftDetail(productJson) {
               </div>
 
               <div class="gift-tab-content" id="tab-gift">
-                <div class="mb-3"><input type="email" class="gd-input" placeholder="Their Email"></div>
+                <div class="mb-3"><input type="email" class="gd-input" placeholder="Their Email" id="recipient-email"></div>
                 <div class="mb-3"><input type="text"  class="gd-input" placeholder="Your Name/s"></div>
                 <div class="mb-3"><textarea class="gd-input" placeholder="Add a Personal Message" rows="3"></textarea></div>
                 <div class="mb-3"><input type="date"  class="gd-input"></div>
               </div>
 
               <div class="gift-tab-content active" id="tab-me">
-                <p class="gd-note">Buying for yourself? We'll send the gift card to your Registered email address.</p>
+                <p class="gd-note">Buying for yourself? We'll send the gift card to your registered email address.</p>
               </div>
 
               <!-- Add to Cart -->
-              <button class="gd-cart-btn" onclick="addToCart(products.find(p=>p.id===${product.id}));showToast('Added to cart!');">
+              <button class="gd-cart-btn" onclick="addProductToCart(${product.id})">
                 ADD TO CART
               </button>
 
@@ -1216,12 +1177,11 @@ function renderGiftDetail(productJson) {
               <div class="gd-about">
                 <h3 class="gd-section-title">About these gift cards</h3>
                 <ul class="gd-about-list">
-                  <li>Securely sent via registered post</li>
-                  <li>Arrives within 5–10 business days</li>
-                  <li>Delivery fees from AED 5.50 per address</li>
-                  <li>Order up to 10 gift cards at a time</li>
-                  <li>Deliver to the same or multiple addresses</li>
-                  <li>Every card valid for 4 years</li>
+                  <li>Securely delivered to your registered email</li>
+                  <li>Instant digital delivery after payment</li>
+                  <li>Valid for 4 years from purchase date</li>
+                  <li>Non-refundable once redeemed</li>
+                  <li>Powered by Reloadly — trusted globally</li>
                   <li>See our gift card purchase terms &amp; conditions</li>
                 </ul>
               </div>
@@ -1231,27 +1191,33 @@ function renderGiftDetail(productJson) {
 
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
+// ── Tab & value helpers ───────────────────────────────────────
 function selectValue(btn, val) {
   document.querySelectorAll('.gd-value-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('custom-amount-wrap').style.display = val === 0 ? 'block' : 'none';
+  const wrap = document.getElementById('custom-amount-wrap');
+  if (wrap) wrap.style.display = val === 0 ? 'block' : 'none';
 }
 
 function switchGiftTab(btn, tab) {
   document.querySelectorAll('.gd-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.gift-tab-content').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
+  const el = document.getElementById('tab-' + tab);
+  if (el) el.classList.add('active');
 }
 
-// ---- SEARCH ----
+// ============================================================
+// SEARCH
+// ============================================================
+
 function renderSearch(query) {
   const main = document.getElementById('main-content');
-  const results = products.filter(p =>
+  const allProducts = [...products, ...state.liveProducts.filter(lp => !products.find(p => p.id === lp.id))];
+  const results = allProducts.filter(p =>
     p.name.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -1269,16 +1235,5 @@ function renderSearch(query) {
           <p>No results found for "${query}". Try a different search term.</p>
         </div>
       `}
-    </div>
-  `;
+    </div>`;
 }
-
-// Override addToCart to parse JSON string if needed
-const _origAddToCart = addToCart;
-window.addToCart = function(productOrJson) {
-  let product = productOrJson;
-  if (typeof productOrJson === 'string') {
-    try { product = JSON.parse(productOrJson); } catch(e) {}
-  }
-  _origAddToCart(product);
-};

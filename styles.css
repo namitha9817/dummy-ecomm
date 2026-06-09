@@ -2219,3 +2219,71 @@ textarea.form-control {
 .hidden { display: none !important; }
 .page-content { display: none; }
 .page-content.active { display: block; }
+
+/* ============================================================
+   RELOADLY INTEGRATION STYLES
+   ============================================================ */
+
+/* Live badge on Reloadly products */
+.rl-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f84464, #ff6b8a);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* Loading spinner */
+.rl-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  font-size: 14px;
+  padding: 8px 0 16px;
+}
+.rl-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #f84464;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Balance badge in header area */
+.rl-balance-badge {
+  background: #fff;
+  border: 1.5px solid #f84464;
+  color: #333;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+.rl-balance-badge strong { color: #f84464; }
+
+/* Live tag on product image */
+.rl-live-tag {
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* Toast variants */
+.toast.success { background: #27ae60; }
+.toast.error   { background: #e74c3c; }
+
+/* Order confirmation code style */
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
