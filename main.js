@@ -346,17 +346,44 @@ function addProductToCart(productId) {
   const product = findProduct(productId);
   if (!product) return;
 
-  const activeBtn    = document.querySelector('.gd-value-btn.active');
-  const selectedPrice = activeBtn
-    ? parseFloat(activeBtn.dataset.value || product.price)
-    : product.price;
+  let finalPrice = product.price;
 
-  // If custom amount input visible, read it
+  // 1. RANGE product — read the number input directly
   const customInput = document.getElementById('custom-amount');
-  const finalPrice  = (customInput && customInput.closest('#custom-amount-wrap') &&
-                       customInput.closest('#custom-amount-wrap').style.display !== 'none')
-    ? parseFloat(customInput.value) || selectedPrice
-    : selectedPrice;
+  if (customInput && product.denominationType === 'RANGE') {
+    const entered = parseFloat(customInput.value);
+    if (!entered || entered <= 0) {
+      showToast(`Please enter a valid amount (${product.currency || 'USD'} ${product.minDenom}–${product.maxDenom})`);
+      customInput.focus();
+      return;
+    }
+    if (product.minDenom && entered < product.minDenom) {
+      showToast(`Minimum amount is ${product.currency || 'USD'} ${product.minDenom}`);
+      customInput.focus();
+      return;
+    }
+    if (product.maxDenom && entered > product.maxDenom) {
+      showToast(`Maximum amount is ${product.currency || 'USD'} ${product.maxDenom}`);
+      customInput.focus();
+      return;
+    }
+    finalPrice = entered;
+  }
+  // 2. FIXED product — read the active denomination button
+  else {
+    const activeBtn = document.querySelector('.gd-value-btn.active');
+    if (activeBtn) {
+      finalPrice = parseFloat(activeBtn.dataset.value) || product.price;
+    }
+    // 3. Custom amount field visible (Other button selected)
+    if (customInput) {
+      const wrap = document.getElementById('custom-amount-wrap');
+      if (wrap && wrap.style.display !== 'none') {
+        const entered = parseFloat(customInput.value);
+        if (entered > 0) finalPrice = entered;
+      }
+    }
+  }
 
   addToCart({ ...product, price: finalPrice });
 }
