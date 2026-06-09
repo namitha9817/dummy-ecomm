@@ -609,42 +609,68 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- WHAT'S WAITING -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title">What's <span>Waiting for You</span></h2>
+    <!-- ====================================================
+         WHAT'S WAITING FOR YOU
+    ==================================================== -->
+    <section class="py-5">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading">What's <span>Waiting for You</span></div>
         </div>
-        <div class="waiting-grid">
-          <div class="waiting-side">
-            ${[
-              { icon: '💳', label: 'Digital Cards', page: 'digital' },
-              { icon: '🎟️', label: 'Tickets',       page: 'digital' },
-              { icon: '🛥️', label: 'Jet Ski',        page: 'jetski'  },
-              { icon: '💆', label: 'Wellness',       page: 'wellness'},
-            ].map(c => `
-              <div class="waiting-icon-card" onclick="navigateTo('${c.page}')">
-                <div class="waiting-icon-img">${c.icon}</div>
-                <div class="waiting-icon-label">${c.label}</div>
+        <div class="row justify-content-center">
+
+          <!-- Left column -->
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+            <div class="waiting_row">
+              <div class="waiting" onclick="navigateTo('digital')">
+                <figure><img src="https://souksnap.com/images/digital-card-icon.png" class="img-fluid" alt="Digital Card" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💳'"></figure>
+                Digital Card
               </div>
-            `).join('')}
-          </div>
-          <div class="waiting-phone">
-            <img class="waiting-phone-img" src="https://placehold.co/140x280/1a1a2e/ffffff?text=%F0%9F%93%B1" alt="App">
-          </div>
-          <div class="waiting-side">
-            ${[
-              { icon: '🏝️', label: 'Getaways',     page: 'getaways'    },
-              { icon: '🎮', label: 'Kids',          page: 'digital'     },
-              { icon: '🎁', label: 'Black Friday',  page: 'blackfriday' },
-              { icon: '🌊', label: 'Pool Party',    page: 'digital'     },
-            ].map(c => `
-              <div class="waiting-icon-card" onclick="navigateTo('${c.page}')">
-                <div class="waiting-icon-img">${c.icon}</div>
-                <div class="waiting-icon-label">${c.label}</div>
+              <div class="waiting" onclick="navigateTo('digital')">
+                <figure><img src="https://souksnap.com/images/ticket-icon.png" class="img-fluid" alt="Tickets" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎟'"></figure>
+                Tickets
               </div>
-            `).join('')}
+              <div class="waiting" onclick="navigateTo('jetski')">
+                <figure><img src="https://souksnap.com/images/jet-ski-icon.png" class="img-fluid" alt="Jet Ski" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🛥'"></figure>
+                Jet Ski
+              </div>
+              <div class="waiting" onclick="navigateTo('wellness')">
+                <figure><img src="https://souksnap.com/images/wellness-icon.png" class="img-fluid" alt="Wellness" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💆'"></figure>
+                Wellness
+              </div>
+            </div>
           </div>
+
+          <!-- Center phone image -->
+          <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div class="waiting_center">
+              <img src="https://souksnap.com/images/mobile-fun.png" class="img-fluid" alt="Mobile App"
+                   onerror="this.src='https://placehold.co/320x560/1a1a2e/ffffff?text=App'">
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+            <div class="waiting_row">
+              <div class="waiting" onclick="navigateTo('digital')">
+                <figure><img src="https://souksnap.com/images/kids-icon.png" class="img-fluid" alt="Kids" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎮'"></figure>
+                Kids
+              </div>
+              <div class="waiting" onclick="navigateTo('getaways')">
+                <figure><img src="https://souksnap.com/images/getaways-icon.png" class="img-fluid" alt="Getaways" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🏝'"></figure>
+                Getaways
+              </div>
+              <div class="waiting" onclick="navigateTo('blackfriday')">
+                <figure><img src="https://souksnap.com/images/black-friday-icon.png" class="img-fluid" alt="Black Friday" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎁'"></figure>
+                Black Friday
+              </div>
+              <div class="waiting" onclick="navigateTo('digital')">
+                <figure><img src="https://souksnap.com/images/beauty-icon.png" class="img-fluid" alt="Beauty" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💄'"></figure>
+                Beauty
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
