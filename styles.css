@@ -486,7 +486,7 @@ button { cursor: pointer; border: none; background: none; }
    NAV BAR
    ============================================================ */
 .nav-bar {
-  background: var(--white);
+  background: rgb(245, 245, 245);
   border-top: 1px solid var(--border);
   position: sticky;
   top: var(--header-height);

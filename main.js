@@ -601,19 +601,19 @@ function renderHome() {
     </section>
 
     <!-- GRAB OFFER -->
-    <section class="section" style="background: var(--bg-light);">
+    <section class="section">
       <div class="section-inner">
         <div class="section-header">
-          <h2 class="section-title">Grab Offer <span>Beauty</span></h2>
+          <h2 class="heading">Grab Offer <span>Beauty</span></h2>
         </div>
       </div>
     </section>
 
     <!-- WHAT'S WAITING -->
-    <section class="section">
+    <section class="section" style="background: var(--bg-light);">
       <div class="section-inner">
         <div class="section-header">
-          <h2 class="section-title">What's <span>Waiting for You</span></h2>
+          <h2 class="heading">What's <span>Waiting for You</span></h2>
         </div>
         <div class="waiting-grid">
           <div class="waiting-side">
