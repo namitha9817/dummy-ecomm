@@ -499,9 +499,6 @@ button { cursor: pointer; border: none; background: none; }
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 .nav-inner::-webkit-scrollbar { display: none; }
@@ -2331,13 +2328,24 @@ textarea.form-control {
 }
 .operator-btn:hover { background: #d63050; }
 
-/* ── Nav spacer — pushes Contact Us & Orders to the right ── */
-.nav-spacer {
-  flex: 1;
-}
-.nav-inner {
+/* ── Nav left/right groups ── */
+.nav-left {
   display: flex;
   align-items: center;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav-left::-webkit-scrollbar { display: none; }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+  border-left: 1px solid var(--border);
+  padding-left: 8px;
 }
 
 /* ── Form validation errors ── */
