@@ -1,5 +1,5 @@
 // ============================================================
-// SOUKSNAP — Express API Server
+// NEXCARDS — Express API Server
 // Proxies Reloadly Gift Cards API (keeps secrets server-side)
 // ============================================================
 
@@ -163,7 +163,7 @@ app.post('/api/giftcards/order', async (req, res) => {
       productId:        req.body.productId,
       quantity:         req.body.quantity         || 1,
       unitPrice:        req.body.unitPrice,
-      customIdentifier: req.body.customIdentifier || `souksnap-${Date.now()}`,
+      customIdentifier: req.body.customIdentifier || `nexcards-${Date.now()}`,
       senderName:       req.body.senderName        || 'Souksnap Customer',
       recipientEmail:   req.body.recipientEmail,
       recipientPhoneDetails: req.body.recipientPhoneDetails || {
@@ -258,7 +258,7 @@ app.post('/api/airtime/topup', async (req, res) => {
       operatorId:      req.body.operatorId,
       amount:          req.body.amount,
       useLocalAmount:  req.body.useLocalAmount !== false,   // default true (AED)
-      customIdentifier: `souksnap-${Date.now()}`,
+      customIdentifier: `nexcards-${Date.now()}`,
       recipientPhone: {
         countryCode: 'AE',
         number:      req.body.recipientPhone

@@ -25,28 +25,28 @@ const state = {
 
 // ── Static fallback products ─────────────────────────────────
 const products = [
-  { id: 28, name: 'EA Sports FC 24 12000 FC Points',                                        price: 380,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/28/5213-Souksnap.jpg' },
-  { id: 29, name: 'EA Sports FC 24 5900 FC Points',                                         price: 200,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/29/6437-Souksnap.jpg' },
-  { id: 30, name: 'EA Sports FC 24 2800 FC Points',                                         price: 100,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/30/6586-Souksnap.jpg' },
-  { id: 31, name: 'EA Sports FC 24 Ultimate Edition',                                       price: 389,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/31/8171-Souksnap.jpg' },
-  { id: 32, name: 'EA Sports FC 24 Standard Edition',                                       price: 299,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/32/1987-Souksnap.jpg' },
-  { id: 33, name: 'EA Sports FC 24 Standard Edition',                                       price: 299,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/33/9430-Souksnap.jpg' },
-  { id: 34, name: "Senua's Saga: Hellblade II Xbox Series X|S",                             price: 199,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/34/7427-Souksnap.jpg' },
-  { id: 35, name: 'Minecraft Legends Deluxe Edition Xbox',                                  price: 199,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/35/8157-Souksnap.jpg' },
-  { id: 36, name: 'Minecraft Legends for Windows 10 PC',                                    price: 159,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/36/7708-Souksnap.jpg' },
+  { id: 28, name: 'EA Sports FC 24 12000 FC Points',                                        price: 380,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/28/5213-NexCards.jpg' },
+  { id: 29, name: 'EA Sports FC 24 5900 FC Points',                                         price: 200,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/29/6437-NexCards.jpg' },
+  { id: 30, name: 'EA Sports FC 24 2800 FC Points',                                         price: 100,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/30/6586-NexCards.jpg' },
+  { id: 31, name: 'EA Sports FC 24 Ultimate Edition',                                       price: 389,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/31/8171-NexCards.jpg' },
+  { id: 32, name: 'EA Sports FC 24 Standard Edition',                                       price: 299,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/32/1987-NexCards.jpg' },
+  { id: 33, name: 'EA Sports FC 24 Standard Edition',                                       price: 299,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/33/9430-NexCards.jpg' },
+  { id: 34, name: "Senua's Saga: Hellblade II Xbox Series X|S",                             price: 199,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/34/7427-NexCards.jpg' },
+  { id: 35, name: 'Minecraft Legends Deluxe Edition Xbox',                                  price: 199,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/35/8157-NexCards.jpg' },
+  { id: 36, name: 'Minecraft Legends for Windows 10 PC',                                    price: 159,  category: 'digital',   img: 'https://souksnap.com/gift_card_images/36/7708-NexCards.jpg' },
   { id: 5,  name: "Thrill-Seeker's Paradise Jet Ski Adventures in Dubai",                   price: 1200, category: 'jetski',    img: 'https://souksnap.com/gift_card_images/5/4284-1.jpg' },
   { id: 6,  name: 'Jet Ski in Fujairah: A Unique Ride Along the Indian Ocean',              price: 600,  category: 'jetski',    img: 'https://souksnap.com/gift_card_images/6/3613-1.jpg' },
   { id: 7,  name: 'High-Speed Fun in Abu Dhabi Jet Skiing by Yas Island',                   price: 1500, category: 'jetski',    img: 'https://souksnap.com/gift_card_images/7/2412-1.jpg' },
   { id: 8,  name: "Explore Ras Al Khaimah's Scenic Coastline with a Jet Ski Tour",          price: 750,  category: 'jetski',    img: 'https://souksnap.com/gift_card_images/8/7702-1.jpg' },
-  { id: 24, name: 'Authentic Tent Stay at Longbeach Campground',                            price: 550,  category: 'getaways',  img: 'https://souksnap.com/gift_card_images/24/8641-Souksnap.jpg' },
-  { id: 25, name: '5-Star Weekday Vacation Stay at Radisson Blu Fujairah',                  price: 750,  category: 'getaways',  img: 'https://souksnap.com/gift_card_images/25/4407-Souksnap.jpg' },
-  { id: 26, name: '5 Star Winter Stay at Al Bahar Hotel and Resort',                        price: 1050, category: 'getaways',  img: 'https://souksnap.com/gift_card_images/26/6362-Souksnap.jpg' },
-  { id: 27, name: '1-Night All Inclusive Stay at Danat Al Ain',                             price: 1350, category: 'getaways',  img: 'https://souksnap.com/gift_card_images/27/7436-Souksnap.jpg' },
-  { id: 15, name: 'Massage + Spa Week Offer',                                               price: 750,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/15/9017-Souksnap.jpg' },
-  { id: 16, name: "Massage + Full Day Pass at Cleopatra's Spa",                             price: 850,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/16/8696-Souksnap.jpg' },
-  { id: 17, name: 'DoubleTree by Hilton JBR Luxury Massage',                                price: 600,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/17/8134-Souksnap.jpg' },
-  { id: 18, name: "All-Day Pass at Pharaoh's Club",                                         price: 200,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/18/7631-Souksnap.jpg' },
-  { id: 19, name: '5 Star Thai Relaxation Package at Sheraton Sharjah',                     price: 450,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/19/9007-Souksnap.jpg' },
+  { id: 24, name: 'Authentic Tent Stay at Longbeach Campground',                            price: 550,  category: 'getaways',  img: 'https://souksnap.com/gift_card_images/24/8641-NexCards.jpg' },
+  { id: 25, name: '5-Star Weekday Vacation Stay at Radisson Blu Fujairah',                  price: 750,  category: 'getaways',  img: 'https://souksnap.com/gift_card_images/25/4407-NexCards.jpg' },
+  { id: 26, name: '5 Star Winter Stay at Al Bahar Hotel and Resort',                        price: 1050, category: 'getaways',  img: 'https://souksnap.com/gift_card_images/26/6362-NexCards.jpg' },
+  { id: 27, name: '1-Night All Inclusive Stay at Danat Al Ain',                             price: 1350, category: 'getaways',  img: 'https://souksnap.com/gift_card_images/27/7436-NexCards.jpg' },
+  { id: 15, name: 'Massage + Spa Week Offer',                                               price: 750,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/15/9017-NexCards.jpg' },
+  { id: 16, name: "Massage + Full Day Pass at Cleopatra's Spa",                             price: 850,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/16/8696-NexCards.jpg' },
+  { id: 17, name: 'DoubleTree by Hilton JBR Luxury Massage',                                price: 600,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/17/8134-NexCards.jpg' },
+  { id: 18, name: "All-Day Pass at Pharaoh's Club",                                         price: 200,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/18/7631-NexCards.jpg' },
+  { id: 19, name: '5 Star Thai Relaxation Package at Sheraton Sharjah',                     price: 450,  category: 'wellness',  img: 'https://souksnap.com/gift_card_images/19/9007-NexCards.jpg' },
 ];
 
 // ============================================================
@@ -76,7 +76,7 @@ const api = {
   }
 };
 
-// Map a Reloadly product to Souksnap's internal format
+// Map a Reloadly product to NexCards's internal format
 function mapReloadlyProduct(p) {
   // Prefer AED (recipient) denominations when currency is AED, else use sender
   const useRecipient = p.recipientCurrencyCode === 'AED' &&
@@ -304,15 +304,19 @@ function navigateTo(page, data = {}) {
   main.innerHTML = '';
 
   const pages = {
-    'home':        renderHome,
-    'about':       renderAbout,
-    'digital':     renderDigital,
-    'contact':     renderContact,
-    'signin':      renderSignIn,
-    'signup':      renderSignUp,
-    'cart':        renderCart,
-    'recharge':    () => renderMobileRecharge(data.operatorId),
-    'orders':      renderOrderHistory,
+    'home':          renderHome,
+    'about':         renderAbout,
+    'digital':       renderDigital,
+    'gaming':        renderGaming,
+    'shopping':      renderShopping,
+    'crypto':        renderCrypto,
+    'entertainment': renderEntertainment,
+    'contact':       renderContact,
+    'signin':        renderSignIn,
+    'signup':        renderSignUp,
+    'cart':          renderCart,
+    'recharge':      () => renderMobileRecharge(data.operatorId),
+    'orders':        renderOrderHistory,
     'gift-detail': () => {
       const product = data.productId !== undefined
         ? findProduct(data.productId)
@@ -329,20 +333,16 @@ function navigateTo(page, data = {}) {
 // ── Nav & Header ─────────────────────────────────────────────
 function renderNav() {
   const navLinks = [
-    { label: 'Home',         page: 'home' },
-    { label: 'About Us',     page: 'about' },
-    { label: 'Digital Card', page: 'digital' },
-    { label: 'Tickets',      page: 'digital' },
-    { label: 'Jet Ski',      page: 'jetski' },
-    { label: 'Wellness',     page: 'wellness' },
-    { label: 'Kids',         page: 'kids' },
-    { label: 'Getaways',     page: 'getaways' },
-    { label: 'Black Friday', page: 'blackfriday' },
-    { label: "Today's Deal", page: 'deals' },
-    { label: 'Supplier',     page: 'supplier' },
-    { label: 'Contact Us',   page: 'contact' },
-    { label: '📱 Recharge',  page: 'recharge' },
-    { label: '📋 My Orders', page: 'orders' },
+    { label: 'Home',          page: 'home' },
+    { label: 'About Us',      page: 'about' },
+    { label: 'Digital Card',  page: 'digital' },
+    { label: 'Gaming',        page: 'gaming' },
+    { label: 'Shopping',      page: 'shopping' },
+    { label: 'Crypto',        page: 'crypto' },
+    { label: 'Recharge',      page: 'recharge' },
+    { label: 'Entertainment', page: 'entertainment' },
+    { label: 'Contact Us',    page: 'contact' },
+    { label: '📋 My Orders',  page: 'orders' },
   ];
 
   document.querySelector('.nav-inner').innerHTML = navLinks.map(l =>
@@ -560,7 +560,7 @@ function renderHome() {
   const digitalCards = (state.liveProducts.length ? state.liveProducts : products.filter(p => p.category === 'digital')).slice(0, 5);
   const jetskiItems  = s.gaming.length        ? s.gaming        : products.filter(p => p.category === 'jetski');
   const getaways     = s.shopping.length      ? s.shopping      : products.filter(p => p.category === 'getaways');
-  const wellness     = products.filter(p => p.category === 'wellness');  // always static
+  // wellness removed from homepage
   const tickets      = s.entertainment.length ? s.entertainment : products.filter(p => p.category === 'digital').slice(3);
 
   const giftCardHTML = (p, i) => `
@@ -600,14 +600,14 @@ function renderHome() {
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                   <div class="banner_text">
                     <div class="sub_head">Limited Discount</div>
-                    <div class="banner_heading">Sell your vouchers in Souksnap Market, register today!</div>
+                    <div class="banner_heading">Sell your vouchers in NexCards Market, register today!</div>
                     <a href="#" class="btn" onclick="navigateTo('digital');return false;">Shop Gift Card</a>
                   </div>
                 </div>
                 <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6">
                   <div class="banner_img">
                     <img src="https://souksnap.com/images/banner.jpg" class="img-fluid" alt="Banner"
-                         onerror="this.src='https://placehold.co/560x430/f84464/fff?text=Souksnap'">
+                         onerror="this.src='https://placehold.co/560x430/f84464/fff?text=NexCards'">
                   </div>
                 </div>
               </div>
@@ -711,7 +711,9 @@ function renderHome() {
     <section class="pb-0 pt-5">
       <div class="container">
         <div class="heading_main">
+
           <div class="heading mb-0">Shopping on, <span>Souksnap</span></div>
+
           ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
         <div class="row g-4 d-none d-lg-flex" id="getaways-static-grid">
@@ -750,23 +752,6 @@ function renderHome() {
       </div>
       <div class="curv_bottom">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="-380" r="400" fill="white" stroke="white"></circle></svg>
-      </div>
-    </section>
-
-    <!-- ── WELLNESS (static only — no Reloadly match) ── -->
-    <section class="pt-0 pb-5">
-      <div class="container">
-        <div class="heading_main">
-          <div class="heading mb-0">Wellness</div>
-        </div>
-        <div class="row g-4 d-none d-lg-flex">
-          ${wellness.slice(0, 5).map(p => `<div class="col-lg">${giftRow(p)}</div>`).join('')}
-        </div>
-        <div class="d-lg-none">
-          <div id="wellness-mob" class="owl-carousel owl-theme">
-            ${wellness.map(p => `<div class="item">${giftRow(p)}</div>`).join('')}
-          </div>
-        </div>
       </div>
     </section>
 
@@ -941,29 +926,19 @@ function renderAbout() {
 // ============================================================
 
 function renderDigital() {
-  const main = document.getElementById('main-content');
-  // Combine live products + static non-digital products
-  const digitalProducts = state.liveProducts.length
+  const prods = state.liveProducts.length
     ? state.liveProducts
     : products.filter(p => p.category === 'digital');
 
-  main.innerHTML = `
-    <div class="section-inner">
-      <div class="page-title-bar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <h1>Digital Card</h1>
-        ${state.accountBalance ? `
-          <div class="rl-balance-badge">
-            💰 Balance: <strong>${state.accountBalance.balance} ${state.accountBalance.currencyCode}</strong>
-          </div>` : ''}
-      </div>
-      ${!state.liveProductsLoaded ? `
-        <div class="rl-loading" style="margin:40px auto;"><span class="rl-spinner"></span> Loading live gift cards from Reloadly…</div>
-      ` : `
-        <div class="products-grid" style="margin-bottom:48px;">
-          ${digitalProducts.map(p => productCardHTML(p)).join('')}
-        </div>
-      `}
-    </div>`;
+  renderCategoryPage({
+    title:    'Digital Cards',
+    emoji:    '🎁',
+    subtitle: 'Gift cards for gaming, shopping, entertainment, crypto & more — instant delivery',
+    bg:       'linear-gradient(135deg, #f84464, #ff6b8a)',
+    prods,
+    gridId:   'digital-grid',
+    emptyMsg: 'No digital products available right now.'
+  });
 }
 
 // ============================================================
@@ -1090,7 +1065,7 @@ function submitSignUp() {
   if (password.length < 6)  { showToast('Password must be at least 6 characters.'); return; }
   state.user = { name, email };
   updateHeaderUser();
-  showToast(`Welcome to Souksnap, ${name}!`);
+  showToast(`Welcome to NexCards, ${name}! 🎉`);
   navigateTo('home');
 }
 
@@ -1755,6 +1730,118 @@ function switchGiftTab(btn, tab) {
   btn.classList.add('active');
   const el = document.getElementById('tab-' + tab);
   if (el) el.classList.add('active');
+}
+
+// ============================================================
+// CATEGORY PAGE HELPER
+// ============================================================
+
+function renderCategoryPage({ title, emoji, subtitle, bg, textColor, prods, gridId, emptyMsg }) {
+  const main = document.getElementById('main-content');
+  const loaded = state.liveProductsLoaded;
+
+  main.innerHTML = `
+    <div>
+      <!-- Hero banner -->
+      <div style="background:${bg};padding:52px 24px;text-align:center;">
+        <div style="font-size:52px;margin-bottom:14px;">${emoji}</div>
+        <h1 style="color:${textColor || '#fff'};font-weight:800;margin:0;font-size:32px;">${title}</h1>
+        <p style="color:${textColor ? textColor + 'aa' : 'rgba(255,255,255,0.65)'};margin:10px 0 0;font-size:15px;">${subtitle}</p>
+      </div>
+
+      <!-- Products -->
+      <div class="container py-5">
+        ${!loaded ? `<div class="rl-loading" style="justify-content:center;padding:48px;"><span class="rl-spinner"></span> Loading live products…</div>` : ''}
+        ${loaded && prods.length === 0 ? `
+          <div style="text-align:center;padding:80px 20px;color:#aaa;">
+            <div style="font-size:48px;margin-bottom:16px;">🔍</div>
+            <p>${emptyMsg || 'No products available right now.'}</p>
+          </div>` : ''}
+        <div class="products-grid" id="${gridId}">
+          ${prods.map(p => productCardHTML(p)).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// GAMING PAGE
+// ============================================================
+
+function renderGaming() {
+  const prods = state.liveByCategory.gaming.length
+    ? state.liveByCategory.gaming
+    : products.filter(p => p.category === 'jetski');
+
+  renderCategoryPage({
+    title:    'Gaming',
+    emoji:    '🎮',
+    subtitle: 'PlayStation, Xbox, Steam, Fortnite, Free Fire & more — instant delivery',
+    bg:       'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+    prods,
+    gridId:   'gaming-grid',
+    emptyMsg: 'No gaming products available right now.'
+  });
+}
+
+// ============================================================
+// SHOPPING PAGE
+// ============================================================
+
+function renderShopping() {
+  const prods = state.liveByCategory.shopping.length
+    ? state.liveByCategory.shopping
+    : products.filter(p => p.category === 'getaways');
+
+  renderCategoryPage({
+    title:    'Shopping',
+    emoji:    '🛍️',
+    subtitle: 'Amazon, Shein, Talabat, Deliveroo, HUAWEI & more UAE gift cards',
+    bg:       'linear-gradient(135deg, #f093fb, #f5576c)',
+    prods,
+    gridId:   'shopping-grid',
+    emptyMsg: 'No shopping products available right now.'
+  });
+}
+
+// ============================================================
+// CRYPTO PAGE
+// ============================================================
+
+function renderCrypto() {
+  const prods = state.liveByCategory.crypto.length
+    ? state.liveByCategory.crypto
+    : [];
+
+  renderCategoryPage({
+    title:    'Crypto Vouchers',
+    emoji:    '₿',
+    subtitle: 'Buy crypto vouchers instantly — no wallet needed, no KYC',
+    bg:       'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+    prods,
+    gridId:   'crypto-grid',
+    emptyMsg: 'No crypto products available in your region right now.'
+  });
+}
+
+// ============================================================
+// ENTERTAINMENT PAGE
+// ============================================================
+
+function renderEntertainment() {
+  const prods = state.liveByCategory.entertainment.length
+    ? state.liveByCategory.entertainment
+    : [];
+
+  renderCategoryPage({
+    title:    'Entertainment',
+    emoji:    '🎬',
+    subtitle: 'Netflix, Spotify, Google Play, iTunes, Anghami, StarzPlay & more',
+    bg:       'linear-gradient(135deg, #e50914, #b20710)',
+    prods,
+    gridId:   'entertainment-grid',
+    emptyMsg: 'No entertainment products available right now.'
+  });
 }
 
 // ============================================================
