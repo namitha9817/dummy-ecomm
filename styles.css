@@ -344,6 +344,8 @@ button { cursor: pointer; border: none; background: none; }
 .trending_bg {
   background: #2b3149;
   padding: 3rem 0;
+  position: relative;
+  z-index: -2;
 }
 
 /* ============================================================
