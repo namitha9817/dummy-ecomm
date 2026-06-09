@@ -357,30 +357,28 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 4 — JET SKI DEALS  (Owl Carousel + gift_card style)
+         SECTION 4 — JET SKI DEALS  (static 4 products)
     ==================================================== -->
     <section class="py-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
         </div>
-        <div class="row justify-content-center">
-          <div id="jet" class="owl-carousel p-0 owl-theme">
-            ${jetskiItems.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                    <figure>
-                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'">
-                    </figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
+        <div class="row g-4">
+          ${jetskiItems.slice(0, 4).map(p => `
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <div class="gift_card">
+                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <figure>
+                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                         onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'">
+                  </figure>
+                  <div>${p.name.substring(0, 20)}</div>
+                  <div class="price"><span>AED</span> ${p.price}</div>
+                </a>
               </div>
-            `).join('')}
-          </div>
+            </div>
+          `).join('')}
         </div>
       </div>
     </section>
@@ -412,30 +410,28 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 6 — GETAWAYS  (Owl Carousel + gift_card style)
+         SECTION 6 — GETAWAYS  (static 4 products)
     ==================================================== -->
     <section class="pb-0 pt-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
         </div>
-        <div class="row justify-content-center">
-          <div id="getaways" class="owl-carousel p-0 owl-theme">
-            ${getaways.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                    <figure>
-                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'">
-                    </figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
+        <div class="row g-4">
+          ${getaways.slice(0, 4).map(p => `
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <div class="gift_card">
+                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <figure>
+                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                         onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'">
+                  </figure>
+                  <div>${p.name.substring(0, 20)}</div>
+                  <div class="price"><span>AED</span> ${p.price}</div>
+                </a>
               </div>
-            `).join('')}
-          </div>
+            </div>
+          `).join('')}
         </div>
       </div>
     </section>
@@ -447,59 +443,55 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         WELLNESS  (Owl Carousel + gift_card style)
+         WELLNESS  (static 4 products)
     ==================================================== -->
     <section class="pt-0 pb-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Wellness</div>
         </div>
-        <div class="row justify-content-center">
-          <div id="wellness" class="owl-carousel p-0 owl-theme">
-            ${wellness.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                    <figure>
-                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'">
-                    </figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
+        <div class="row g-4">
+          ${wellness.slice(0, 4).map(p => `
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <div class="gift_card">
+                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <figure>
+                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                         onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'">
+                  </figure>
+                  <div>${p.name.substring(0, 20)}</div>
+                  <div class="price"><span>AED</span> ${p.price}</div>
+                </a>
               </div>
-            `).join('')}
-          </div>
+            </div>
+          `).join('')}
         </div>
       </div>
     </section>
 
     <!-- ====================================================
-         TICKETS  (Owl Carousel + gift_card style, gray bg)
+         TICKETS  (static 4 products, gray bg)
     ==================================================== -->
     <section class="gray_bg py-5" style="background:#f9f8f8;">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Tickets</div>
         </div>
-        <div class="row justify-content-center">
-          <div id="ticket" class="owl-carousel p-0 owl-theme">
-            ${tickets.map(p => `
-              <div class="item">
-                <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                    <figure>
-                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'">
-                    </figure>
-                    <div>${p.name.substring(0, 20)}</div>
-                    <div class="price"><span>AED</span> ${p.price}</div>
-                  </a>
-                </div>
+        <div class="row g-4">
+          ${tickets.slice(0, 4).map(p => `
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <div class="gift_card">
+                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <figure>
+                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                         onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'">
+                  </figure>
+                  <div>${p.name.substring(0, 20)}</div>
+                  <div class="price"><span>AED</span> ${p.price}</div>
+                </a>
               </div>
-            `).join('')}
-          </div>
+            </div>
+          `).join('')}
         </div>
       </div>
     </section>
@@ -588,10 +580,7 @@ function initHomeCarousels() {
         992:  { items: 4 }
       }
     };
-    $('#jet').owlCarousel(owlOpts);
-    $('#getaways').owlCarousel(owlOpts);
-    $('#wellness').owlCarousel(owlOpts);
-    $('#ticket').owlCarousel(owlOpts);
+    // jet, getaways, wellness, ticket now use static grids — no carousel needed
   }
 }
 
