@@ -2460,3 +2460,187 @@ code {
   font-family: 'Courier New', monospace;
   font-size: 13px;
 }
+
+/* ============================================================
+   HAMBURGER BUTTON
+   ============================================================ */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.hamburger-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+
+/* ============================================================
+   MOBILE MENU OVERLAY
+   ============================================================ */
+#mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  max-width: 90vw;
+  height: 100%;
+  background: var(--white);
+  z-index: 2000;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+#mobile-menu.open { right: 0; }
+
+body.menu-open::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1999;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-menu-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+.mobile-menu-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.mobile-search {
+  position: relative;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-search input {
+  width: 100%;
+  padding: 9px 16px 9px 36px;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+}
+.mobile-search input:focus { border-color: var(--primary); }
+.mobile-search .search-icon {
+  position: absolute;
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  flex: 1;
+}
+.mobile-nav-links a {
+  padding: 13px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  border-bottom: 1px solid #f5f5f5;
+  transition: background 0.15s, color 0.15s;
+}
+.mobile-nav-links a:hover,
+.mobile-nav-links a.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.mobile-menu-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.mobile-user-info {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+/* ============================================================
+   RESPONSIVE — ≤1050px  (hamburger kicks in)
+   ============================================================ */
+@media (max-width: 1050px) {
+  /* Show hamburger, hide desktop-only elements */
+  .hamburger-btn  { display: flex; }
+  .desktop-only   { display: none !important; }
+
+  /* Hide entire nav bar — links move into hamburger */
+  .nav-bar { display: none; }
+
+  /* Hide desktop search bar */
+  .search-bar { display: none; }
+
+  /* About/gift banner padding */
+  .about_bg { padding: 9rem 0; }
+}
+
+/* ============================================================
+   RESPONSIVE — hero banner ≤768px  (image on top, text below)
+   ============================================================ */
+@media (max-width: 768px) {
+  .banner .row {
+    flex-direction: column-reverse;
+  }
+  .banner .col-xl-6,
+  .banner .col-xl-5,
+  .banner .col-lg-6,
+  .banner .col-md-6,
+  .banner .col-sm-6 {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+  .banner_img img {
+    max-height: 220px;
+    border-radius: 1rem;
+    margin-bottom: 16px;
+  }
+  .banner_heading { font-size: 28px; }
+  .banner_text { padding: 1rem 0; }
+}
+
+/* ============================================================
+   RESPONSIVE — "What's Waiting" section ≤768px
+   ============================================================ */
+@media (max-width: 768px) {
+  .waiting:nth-of-type(3) { left: 2px; }
+  .waiting:last-child     { left: 0px; }
+  .waiting_center         { padding: 2rem 3rem; }
+}
+
+/* ============================================================
+   HIDE OWL CAROUSEL DOTS GLOBALLY
+   ============================================================ */
+.owl-dots { display: none !important; }

@@ -402,15 +402,58 @@ function renderNav() {
     ...(state.user ? [{ label: '📋 My Orders', page: 'orders' }] : []),
   ];
 
+  const allLinks = [...leftLinks, ...rightLinks];
+
   const linkHTML = l =>
     `<a href="#" data-page="${l.page}" onclick="navigateTo('${l.page}');return false;">${l.label}</a>`;
 
+  // Desktop nav
   document.querySelector('.nav-inner').innerHTML =
     `<div class="nav-left">${leftLinks.map(linkHTML).join('')}</div>` +
     `<div class="nav-right">${rightLinks.map(linkHTML).join('')}</div>`;
 
+  // Mobile menu panel
+  let mobileMenu = document.getElementById('mobile-menu');
+  if (!mobileMenu) {
+    mobileMenu = document.createElement('div');
+    mobileMenu.id = 'mobile-menu';
+    document.body.appendChild(mobileMenu);
+  }
+  mobileMenu.innerHTML = `
+    <div class="mobile-menu-header">
+      <span class="mobile-menu-title">Menu</span>
+      <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+    </div>
+    <div class="mobile-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search" onkeydown="if(event.key==='Enter'){doSearch(this.value);closeMobileMenu()}">
+    </div>
+    <nav class="mobile-nav-links">
+      ${allLinks.map(l => `<a href="#" data-page="${l.page}" onclick="navigateTo('${l.page}');closeMobileMenu();return false;">${l.label}</a>`).join('')}
+    </nav>
+    <div class="mobile-menu-footer">
+      ${state.user
+        ? `<div class="mobile-user-info">Hi, ${state.user.name.split(' ')[0].toUpperCase()}</div>
+           <button class="btn-block" onclick="logout();closeMobileMenu()">LOGOUT</button>`
+        : `<button class="btn-block" onclick="navigateTo('signin');closeMobileMenu()">SIGN IN</button>
+           <button class="btn-block" style="background:#333;margin-top:8px;" onclick="navigateTo('signup');closeMobileMenu()">CREATE ACCOUNT</button>`
+      }
+    </div>`;
 
   updateHeaderUser();
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  if (!menu) return;
+  menu.classList.toggle('open');
+  document.body.classList.toggle('menu-open');
+}
+
+function closeMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  if (menu) menu.classList.remove('open');
+  document.body.classList.remove('menu-open');
 }
 
 function updateHeaderUser() {
@@ -419,29 +462,39 @@ function updateHeaderUser() {
 
   if (state.user) {
     actions.innerHTML = `
-      <span class="btn-user-name">Hi, ${state.user.name.toUpperCase()}</span>
-      <button class="btn-logout" onclick="logout()">LOGOUT</button>
+      <span class="btn-user-name desktop-only">Hi, ${state.user.name.split(' ')[0].toUpperCase()}</span>
+      <button class="btn-logout desktop-only" onclick="logout()">LOGOUT</button>
       <div class="cart-wrapper">
         <div class="cart-btn" onclick="toggleCart()">🛒
           <span class="cart-badge" id="cart-badge">${state.cartItems.length || ''}</span>
         </div>
         <div class="cart-dropdown hidden" id="cart-dropdown"></div>
-      </div>`;
+      </div>
+      <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>`;
   } else {
     actions.innerHTML = `
-      <button class="btn-signin" onclick="navigateTo('signin')">SIGN IN</button>
+      <button class="btn-signin desktop-only" onclick="navigateTo('signin')">SIGN IN</button>
       <div class="cart-wrapper">
         <div class="cart-btn" onclick="toggleCart()">🛒
           <span class="cart-badge" id="cart-badge">${state.cartItems.length || ''}</span>
         </div>
         <div class="cart-dropdown hidden" id="cart-dropdown"></div>
-      </div>`;
+      </div>
+      <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>`;
   }
 }
 
 function logout() {
   state.user = null;
+  state.orderHistory = [];
+  LS.clearSession();
   updateHeaderUser();
+  renderNav();
+  closeMobileMenu();
   showToast('Logged out successfully');
   navigateTo('home');
 }
