@@ -320,16 +320,18 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 2 — DIGITAL CARD  (static 5 products, no carousel)
+         SECTION 2 — DIGITAL CARD
+         lg+: 5 static | <lg: carousel 4→3→2→1
     ==================================================== -->
     <section class="digital_bg">
       <div class="container">
         <div class="heading_main">
           <div class="heading">Digital <span>Card</span></div>
         </div>
-        <div class="row g-3 justify-content-center">
+        <!-- Static grid — lg and above -->
+        <div class="row g-3 justify-content-center d-none d-lg-flex">
           ${digitalCards.map((p, i) => `
-            <div class="col-xl col-lg col-md-4 col-sm-6 col-6">
+            <div class="col-lg">
               <div class="digital_card digital_card--${(i % 4) + 1}">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
                   <figure>
@@ -341,6 +343,24 @@ function renderHome() {
               </div>
             </div>
           `).join('')}
+        </div>
+        <!-- Carousel — below lg -->
+        <div class="d-lg-none">
+          <div id="digital-mob" class="owl-carousel owl-theme">
+            ${digitalCards.map((p, i) => `
+              <div class="item">
+                <div class="digital_card digital_card--${(i % 4) + 1}">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure>
+                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                           onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
+                    </figure>
+                    ${p.name.substring(0, 20)}
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -365,10 +385,10 @@ function renderHome() {
         <div class="heading_main">
           <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
         </div>
-        <!-- Static grid — visible md and above -->
-        <div class="row g-4 d-none d-md-flex">
+        <!-- Static grid — lg and above -->
+        <div class="row g-4 d-none d-lg-flex">
           ${jetskiItems.slice(0, 5).map((p, i) => `
-            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
+            <div class="col-lg">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
@@ -379,8 +399,8 @@ function renderHome() {
             </div>
           `).join('')}
         </div>
-        <!-- Carousel — visible sm and below -->
-        <div class="d-md-none">
+        <!-- Carousel — below lg -->
+        <div class="d-lg-none">
           <div id="jet-mob" class="owl-carousel owl-theme">
             ${jetskiItems.map(p => `
               <div class="item">
@@ -433,10 +453,10 @@ function renderHome() {
         <div class="heading_main">
           <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
         </div>
-        <!-- Static grid — visible md and above -->
-        <div class="row g-4 d-none d-md-flex">
+        <!-- Static grid — lg and above -->
+        <div class="row g-4 d-none d-lg-flex">
           ${getaways.slice(0, 5).map((p, i) => `
-            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
+            <div class="col-lg">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
@@ -447,8 +467,8 @@ function renderHome() {
             </div>
           `).join('')}
         </div>
-        <!-- Carousel — visible sm and below -->
-        <div class="d-md-none">
+        <!-- Carousel — below lg -->
+        <div class="d-lg-none">
           <div id="getaways-mob" class="owl-carousel owl-theme">
             ${getaways.map(p => `
               <div class="item">
@@ -505,10 +525,10 @@ function renderHome() {
         <div class="heading_main">
           <div class="heading mb-0">Wellness</div>
         </div>
-        <!-- Static grid — visible md and above -->
-        <div class="row g-4 d-none d-md-flex">
+        <!-- Static grid — lg and above -->
+        <div class="row g-4 d-none d-lg-flex">
           ${wellness.slice(0, 5).map((p, i) => `
-            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
+            <div class="col-lg">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
@@ -519,8 +539,8 @@ function renderHome() {
             </div>
           `).join('')}
         </div>
-        <!-- Carousel — visible sm and below -->
-        <div class="d-md-none">
+        <!-- Carousel — below lg -->
+        <div class="d-lg-none">
           <div id="wellness-mob" class="owl-carousel owl-theme">
             ${wellness.map(p => `
               <div class="item">
@@ -547,10 +567,10 @@ function renderHome() {
         <div class="heading_main">
           <div class="heading mb-0">Tickets</div>
         </div>
-        <!-- Static grid — visible md and above -->
-        <div class="row g-4 d-none d-md-flex">
+        <!-- Static grid — lg and above -->
+        <div class="row g-4 d-none d-lg-flex">
           ${tickets.slice(0, 5).map((p, i) => `
-            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
+            <div class="col-lg">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
@@ -561,8 +581,8 @@ function renderHome() {
             </div>
           `).join('')}
         </div>
-        <!-- Carousel — visible sm and below -->
-        <div class="d-md-none">
+        <!-- Carousel — below lg -->
+        <div class="d-lg-none">
           <div id="ticket-mob" class="owl-carousel owl-theme">
             ${tickets.map(p => `
               <div class="item">
@@ -664,7 +684,7 @@ function initHomeCarousels() {
         992:  { items: 4 }
       }
     };
-    // Mobile-only carousels (sm and below)
+    // Responsive carousels (active below lg): 4→3→2→1
     const mobOpts = {
       loop: true,
       margin: 16,
@@ -673,8 +693,14 @@ function initHomeCarousels() {
       autoplay: true,
       autoplayTimeout: 3500,
       autoplayHoverPause: true,
-      items: 1
+      responsive: {
+        0:   { items: 1 },   // xs
+        480: { items: 2 },   // xs→sm
+        576: { items: 3 },   // sm
+        768: { items: 4 }    // md (lg+ uses static grid)
+      }
     };
+    $('#digital-mob').owlCarousel(mobOpts);
     $('#jet-mob').owlCarousel(mobOpts);
     $('#getaways-mob').owlCarousel(mobOpts);
     $('#wellness-mob').owlCarousel(mobOpts);
