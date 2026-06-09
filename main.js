@@ -64,7 +64,7 @@ function navigateTo(page, data = {}) {
     'signin': renderSignIn,
     'signup': renderSignUp,
     'cart': renderCart,
-    'gift-detail': () => renderGiftDetail(data.product),
+    'gift-detail': () => renderGiftDetail(data.productId !== undefined ? products.find(p => p.id === data.productId) : data.product),
     'search': () => renderSearch(data.query),
   };
 
@@ -239,7 +239,7 @@ function doSearch(query) {
 // ---- Product Card HTML ----
 function productCardHTML(p) {
   return `
-    <div class="product-card" onclick="navigateTo('gift-detail', {product: ${JSON.stringify(JSON.stringify(p))}})">
+    <div class="product-card" style="cursor:pointer;" onclick="navigateTo('gift-detail',{productId:${p.id}})">
       <img class="product-card-img" src="${p.img}" alt="${p.name}" onerror="this.src='https://placehold.co/200x200/f0f0f0/999?text=IMG'">
       <div class="product-card-body">
         <div class="product-card-name">${p.name}</div>
@@ -333,7 +333,7 @@ function renderHome() {
           ${digitalCards.map((p, i) => `
             <div class="col-lg">
               <div class="digital_card digital_card--${(i % 4) + 1}">
-                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                   <figure>
                     <img src="${p.img}" class="img-fluid" alt="${p.name}"
                          onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
@@ -350,7 +350,7 @@ function renderHome() {
             ${digitalCards.map((p, i) => `
               <div class="item">
                 <div class="digital_card digital_card--${(i % 4) + 1}">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                     <figure>
                       <img src="${p.img}" class="img-fluid" alt="${p.name}"
                            onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
@@ -390,7 +390,7 @@ function renderHome() {
           ${jetskiItems.slice(0, 5).map((p, i) => `
             <div class="col-lg">
               <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
@@ -405,7 +405,7 @@ function renderHome() {
             ${jetskiItems.map(p => `
               <div class="item">
                 <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                     <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
                     <div>${p.name.substring(0, 20)}</div>
                     <div class="price"><span>AED</span> ${p.price}</div>
@@ -458,7 +458,7 @@ function renderHome() {
           ${getaways.slice(0, 5).map((p, i) => `
             <div class="col-lg">
               <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
@@ -473,7 +473,7 @@ function renderHome() {
             ${getaways.map(p => `
               <div class="item">
                 <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                     <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
                     <div>${p.name.substring(0, 20)}</div>
                     <div class="price"><span>AED</span> ${p.price}</div>
@@ -530,7 +530,7 @@ function renderHome() {
           ${wellness.slice(0, 5).map((p, i) => `
             <div class="col-lg">
               <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
@@ -545,7 +545,7 @@ function renderHome() {
             ${wellness.map(p => `
               <div class="item">
                 <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                     <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
                     <div>${p.name.substring(0, 20)}</div>
                     <div class="price"><span>AED</span> ${p.price}</div>
@@ -572,7 +572,7 @@ function renderHome() {
           ${tickets.slice(0, 5).map((p, i) => `
             <div class="col-lg">
               <div class="gift_card">
-                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                   <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
@@ -587,7 +587,7 @@ function renderHome() {
             ${tickets.map(p => `
               <div class="item">
                 <div class="gift_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
                     <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
                     <div>${p.name.substring(0, 20)}</div>
                     <div class="price"><span>AED</span> ${p.price}</div>
@@ -1208,7 +1208,7 @@ function renderGiftDetail(productJson) {
               </div>
 
               <!-- Add to Cart -->
-              <button class="gd-cart-btn" onclick="addToCart(${JSON.stringify(JSON.stringify(product))});showToast('Added to cart!');">
+              <button class="gd-cart-btn" onclick="addToCart(products.find(p=>p.id===${product.id}));showToast('Added to cart!');">
                 ADD TO CART
               </button>
 
@@ -1236,13 +1236,13 @@ function renderGiftDetail(productJson) {
 }
 
 function selectValue(btn, val) {
-  document.querySelectorAll('.value-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.gd-value-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('custom-amount-wrap').style.display = val === 0 ? 'block' : 'none';
 }
 
 function switchGiftTab(btn, tab) {
-  document.querySelectorAll('.gift-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.gd-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.gift-tab-content').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
