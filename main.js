@@ -622,7 +622,7 @@ function renderHome() {
     <section class="py-5">
       <div class="container">
         <div class="heading_main">
-          <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
+          <div class="heading mb-0">Gaming, <span>Deals</span></div>
           ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
         <div class="row g-4 d-none d-lg-flex" id="jetski-static-grid">
@@ -660,7 +660,7 @@ function renderHome() {
     <section class="pb-0 pt-5">
       <div class="container">
         <div class="heading_main">
-          <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
+          <div class="heading mb-0">Shopping on, <span>Souksnap</span></div>
           ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
         <div class="row g-4 d-none d-lg-flex" id="getaways-static-grid">
@@ -723,7 +723,7 @@ function renderHome() {
     <section class="gray_bg py-5">
       <div class="container">
         <div class="heading_main">
-          <div class="heading mb-0">Tickets</div>
+          <div class="heading mb-0">Entertainment</div>
           ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
         <div class="row g-4 d-none d-lg-flex" id="tickets-static-grid">
