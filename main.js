@@ -1104,11 +1104,25 @@ function renderContact() {
         </div>
         <div class="message-form">
           <h3>Send Us a Message</h3>
-          <div class="form-group"><input type="text" class="form-control" placeholder="Full Name" id="contact-name" required></div>
-          <div class="form-group"><input type="email" class="form-control" placeholder="Email Address" id="contact-email" required></div>
-          <div class="form-group"><input type="tel" class="form-control" placeholder="Mobile Number" id="contact-phone"></div>
-          <div class="form-group"><input type="text" class="form-control" placeholder="Subject" id="contact-subject" required></div>
-          <div class="form-group"><textarea class="form-control" placeholder="Message" id="contact-message" rows="4" required></textarea></div>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Full Name *" id="contact-name" oninput="clearFieldError('contact-name')">
+            <div class="field-error" id="err-contact-name"></div>
+          </div>
+          <div class="form-group">
+            <input type="email" class="form-control" placeholder="Email Address *" id="contact-email" oninput="clearFieldError('contact-email')">
+            <div class="field-error" id="err-contact-email"></div>
+          </div>
+          <div class="form-group">
+            <input type="tel" class="form-control" placeholder="Mobile Number" id="contact-phone">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Subject *" id="contact-subject" oninput="clearFieldError('contact-subject')">
+            <div class="field-error" id="err-contact-subject"></div>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" placeholder="Message *" id="contact-message" rows="4" oninput="clearFieldError('contact-message')"></textarea>
+            <div class="field-error" id="err-contact-message"></div>
+          </div>
           <button class="btn-block" onclick="submitContactForm()">SUBMIT</button>
         </div>
       </div>
@@ -1116,15 +1130,23 @@ function renderContact() {
 }
 
 function submitContactForm() {
-  const name    = document.getElementById('contact-name').value;
-  const email   = document.getElementById('contact-email').value;
-  const subject = document.getElementById('contact-subject').value;
-  const message = document.getElementById('contact-message').value;
-  if (!name || !email || !subject || !message) {
-    showToast('Please fill in all required fields.');
-    return;
+  const name    = document.getElementById('contact-name').value.trim();
+  const email   = document.getElementById('contact-email').value.trim();
+  const subject = document.getElementById('contact-subject').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+
+  let valid = true;
+  if (!name) { setFieldError('contact-name', 'Full name is required.'); valid = false; }
+  if (!email) {
+    setFieldError('contact-email', 'Email is required.'); valid = false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    setFieldError('contact-email', 'Please enter a valid email address.'); valid = false;
   }
-  showToast("Message sent! We'll get back to you soon.");
+  if (!subject) { setFieldError('contact-subject', 'Subject is required.'); valid = false; }
+  if (!message) { setFieldError('contact-message', 'Message is required.'); valid = false; }
+  if (!valid) return;
+
+  showToast("Message sent! We'll get back to you soon. ✅", 'success');
   ['contact-name','contact-email','contact-phone','contact-subject','contact-message']
     .forEach(id => document.getElementById(id).value = '');
 }
