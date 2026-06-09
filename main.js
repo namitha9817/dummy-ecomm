@@ -21,14 +21,14 @@ const products = [
   { id: 34, name: "Senua's Saga: Hellblade II Xbox Series X|S - Instant Delivery", price: 199, category: 'digital', img: 'https://souksnap.com/gift_card_images/34/7427-Souksnap.jpg' },
   { id: 35, name: 'Minecraft Legends Deluxe Edition Xbox Series X|S - Instant Delivery', price: 199, category: 'digital', img: 'https://souksnap.com/gift_card_images/35/8157-Souksnap.jpg' },
   { id: 36, name: 'Minecraft Legends for Windows 10 PC - Instant Delivery', price: 159, category: 'digital', img: 'https://souksnap.com/gift_card_images/36/7708-Souksnap.jpg' },
-  { id: 10, name: 'Thrill-Seekers Jet Ski Package', price: 1200, category: 'jetski', img: 'https://placehold.co/200x200/0a2a4a/white?text=Jet+Ski' },
-  { id: 11, name: 'Jet Ski in Fujairah', price: 800, category: 'jetski', img: 'https://placehold.co/200x200/0a1a3a/white?text=Fujairah+Ski' },
-  { id: 12, name: 'High-Speed Fun in Abu Dhabi', price: 1900, category: 'jetski', img: 'https://placehold.co/200x200/0a3a5a/white?text=Abu+Dhabi' },
-  { id: 13, name: 'Explore Ras Al Khaimah', price: 750, category: 'jetski', img: 'https://placehold.co/200x200/0a2a2a/white?text=RAK' },
-  { id: 14, name: 'Authentic Tent Stay', price: 350, category: 'getaways', img: 'https://placehold.co/200x200/3a2a0a/white?text=Tent+Stay' },
-  { id: 15, name: '5-Star Weekday Vacation', price: 750, category: 'getaways', img: 'https://placehold.co/200x200/1a2a3a/white?text=5+Star' },
-  { id: 16, name: '5-Star Winter Stay', price: 600, category: 'getaways', img: 'https://placehold.co/200x200/2a3a4a/white?text=Winter' },
-  { id: 17, name: '1-Night All Inclusive', price: 1850, category: 'getaways', img: 'https://placehold.co/200x200/3a2a4a/white?text=All+Incl' },
+  { id: 5,  name: "Thrill-Seeker's Paradise Jet Ski Adventures in Dubai", price: 1200, category: 'jetski', img: 'https://souksnap.com/gift_card_images/5/4284-1.jpg' },
+  { id: 6,  name: 'Jet Ski in Fujairah: A Unique Ride Along the Indian Ocean', price: 600, category: 'jetski', img: 'https://souksnap.com/gift_card_images/6/3613-1.jpg' },
+  { id: 7,  name: 'High-Speed Fun in Abu Dhabi Jet Skiing by Yas Island', price: 1500, category: 'jetski', img: 'https://souksnap.com/gift_card_images/7/2412-1.jpg' },
+  { id: 8,  name: "Explore Ras Al Khaimah's Scenic Coastline with a Jet Ski Tour", price: 750, category: 'jetski', img: 'https://souksnap.com/gift_card_images/8/7702-1.jpg' },
+  { id: 24, name: 'Authentic Tent Stay at Longbeach Campground', price: 550, category: 'getaways', img: 'https://souksnap.com/gift_card_images/24/8641-Souksnap.jpg' },
+  { id: 25, name: '5-Star Weekday Vacation Stay at Radisson Blu Fujairah', price: 750, category: 'getaways', img: 'https://souksnap.com/gift_card_images/25/4407-Souksnap.jpg' },
+  { id: 26, name: '5 Star Winter Stay at Al Bahar Hotel and Resort', price: 1050, category: 'getaways', img: 'https://souksnap.com/gift_card_images/26/6362-Souksnap.jpg' },
+  { id: 27, name: '1-Night All Inclusive Stay at Danat Al Ain', price: 1350, category: 'getaways', img: 'https://souksnap.com/gift_card_images/27/7436-Souksnap.jpg' },
   { id: 18, name: 'Massage + Spa Week', price: 155, category: 'wellness', img: 'https://placehold.co/200x200/4a2a3a/white?text=Spa+Week' },
   { id: 19, name: 'Massage + Full Day Package', price: 650, category: 'wellness', img: 'https://placehold.co/200x200/3a1a2a/white?text=Full+Day' },
   { id: 20, name: 'DoubleTree by Hilton', price: 600, category: 'wellness', img: 'https://placehold.co/200x200/2a0a1a/white?text=DoubleTree' },
@@ -255,18 +255,17 @@ function productCardHTML(p) {
 
 // ---- HOME ----
 function renderHome() {
-  const main = document.getElementById('main-content');
-  const digitalCards = products.filter(p => p.category === 'digital');
+  const main        = document.getElementById('main-content');
+  const digitalCards = products.filter(p => p.category === 'digital').slice(0, 5);
   const jetskiItems  = products.filter(p => p.category === 'jetski');
   const getaways     = products.filter(p => p.category === 'getaways');
   const wellness     = products.filter(p => p.category === 'wellness');
   const tickets      = products.filter(p => p.category === 'digital').slice(3);
-  const trendingAll  = products.slice(0, 8);
 
   main.innerHTML = `
 
     <!-- ====================================================
-         SECTION 1 — BANNER (Bootstrap carousel)
+         SECTION 1 — BANNER  background #2b3149
     ==================================================== -->
     <section class="banner">
       <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -303,14 +302,13 @@ function renderHome() {
                 <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6">
                   <div class="banner_img">
                     <img src="https://souksnap.com/images/banner1.jpg" class="img-fluid" alt="Banner"
-                         onerror="this.src='https://placehold.co/560x430/f84464/fff?text=Shop+%26+Save'">
+                         onerror="this.src='https://placehold.co/560x430/ffffff/333?text=Shop+%26+Save'">
                   </div>
                 </div>
               </div>
             </div>
 
-          </div><!-- /.carousel-inner -->
-
+          </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           </button>
@@ -322,53 +320,62 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 2 — DIGITAL CARD (Owl Carousel)
+         SECTION 2 — DIGITAL CARD  (static 5 products, no carousel)
     ==================================================== -->
     <section class="digital_bg">
       <div class="container">
         <div class="heading_main">
           <div class="heading">Digital <span>Card</span></div>
         </div>
-        <div class="row justify-content-center">
-          <div id="digital" class="owl-carousel p-0 owl-theme">
-            ${digitalCards.map(p => `
-              <div class="item">
-                <div class="digital_card">
-                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                    <figure>
-                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
-                    </figure>
-                    ${p.name.substring(0, 20)}
-                  </a>
-                </div>
+        <div class="row g-3 justify-content-center">
+          ${digitalCards.map((p, i) => `
+            <div class="col-xl col-lg col-md-4 col-sm-6 col-6">
+              <div class="digital_card digital_card--${(i % 4) + 1}">
+                <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                  <figure>
+                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                         onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
+                  </figure>
+                  ${p.name.substring(0, 20)}
+                </a>
               </div>
-            `).join('')}
-          </div>
+            </div>
+          `).join('')}
         </div>
       </div>
     </section>
 
     <!-- ====================================================
-         SECTION 3 — WHAT'S TRENDING (Owl Carousel)
+         SECTION 3 — WHAT'S TRENDING  (heading only, no products)
     ==================================================== -->
     <section class="trending_bg">
       <div class="container">
         <div class="heading_main">
           <div class="heading">What's <span>Trending</span> Today</div>
         </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SECTION 4 — JET SKI DEALS  (Owl Carousel + gift_card style)
+    ==================================================== -->
+    <section class="py-5">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
+        </div>
         <div class="row justify-content-center">
-          <div id="trending" class="owl-carousel p-0 owl-theme">
-            ${trendingAll.map(p => `
+          <div id="jet" class="owl-carousel p-0 owl-theme">
+            ${jetskiItems.map(p => `
               <div class="item">
-                <div class="digital_card" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);">
-                  <a href="#" style="color:#fff;"
-                     onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
                     <figure>
                       <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                           onerror="this.src='https://placehold.co/160x160/2b3149/fff?text=IMG'">
+                           onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'">
                     </figure>
-                    ${p.name.substring(0, 20)}
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
                   </a>
                 </div>
               </div>
@@ -379,42 +386,56 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 4 — JET SKI DEALS
+         SECTION 5 — AD BANNER (Bootstrap carousel)
     ==================================================== -->
-    <section class="section" style="background: var(--bg-light);">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title">Jet Ski, <s>Deals</s></h2>
-        </div>
-        <div class="products-grid">
-          ${jetskiItems.map(p => productCardHTML(p)).join('')}
+    <section class="add_banner">
+      <div class="container">
+        <div id="addCarousel" class="carousel slide pointer-event" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item">
+              <img src="https://souksnap.com/images/add.png" class="img-fluid" alt="Ad Banner"
+                   onerror="this.src='https://placehold.co/1200x200/2b3149/fff?text=Special+Offer'">
+            </div>
+            <div class="carousel-item active">
+              <img src="https://souksnap.com/images/add.png" class="img-fluid" alt="Ad Banner"
+                   onerror="this.src='https://placehold.co/1200x200/f84464/fff?text=Special+Offer'">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#addCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#addCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- TIMEZONE BANNER -->
-    <div class="banner-ad">
-      <button class="banner-arrow left">&#8249;</button>
-      <div class="banner-ad-inner">
-        <div>
-          <h2>GIVE THE<br>GIFT<br>OF FUN</h2>
+    <!-- ====================================================
+         SECTION 6 — GETAWAYS  (Owl Carousel + gift_card style)
+    ==================================================== -->
+    <section class="pb-0 pt-5">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
         </div>
-        <div style="background:rgba(255,255,255,0.12);border-radius:12px;padding:16px 24px;text-align:center;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.7);text-transform:uppercase;margin-bottom:4px;">TIMEZONE</div>
-          <div style="font-size:28px;">🎮</div>
-        </div>
-      </div>
-      <button class="banner-arrow right">&#8250;</button>
-    </div>
-
-    <!-- GETAWAYS -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title">Getaways on, <span>Souksnap</span></h2>
-        </div>
-        <div class="products-grid">
-          ${getaways.map(p => productCardHTML(p)).join('')}
+        <div class="row justify-content-center">
+          <div id="getaways" class="owl-carousel p-0 owl-theme">
+            ${getaways.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure>
+                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                           onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'">
+                    </figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -468,9 +489,9 @@ function renderHome() {
           <div class="waiting-side">
             ${[
               { icon: '💳', label: 'Digital Cards', page: 'digital' },
-              { icon: '🎟️', label: 'Tickets', page: 'digital' },
-              { icon: '🛥️', label: 'Jet Ski', page: 'jetski' },
-              { icon: '💆', label: 'Wellness', page: 'wellness' },
+              { icon: '🎟️', label: 'Tickets',       page: 'digital' },
+              { icon: '🛥️', label: 'Jet Ski',        page: 'jetski'  },
+              { icon: '💆', label: 'Wellness',       page: 'wellness'},
             ].map(c => `
               <div class="waiting-icon-card" onclick="navigateTo('${c.page}')">
                 <div class="waiting-icon-img">${c.icon}</div>
@@ -483,10 +504,10 @@ function renderHome() {
           </div>
           <div class="waiting-side">
             ${[
-              { icon: '🏝️', label: 'Getaways', page: 'getaways' },
-              { icon: '🎮', label: 'Kids', page: 'digital' },
-              { icon: '🎁', label: 'Black Friday', page: 'blackfriday' },
-              { icon: '🌊', label: 'Pool Party', page: 'digital' },
+              { icon: '🏝️', label: 'Getaways',     page: 'getaways'    },
+              { icon: '🎮', label: 'Kids',          page: 'digital'     },
+              { icon: '🎁', label: 'Black Friday',  page: 'blackfriday' },
+              { icon: '🌊', label: 'Pool Party',    page: 'digital'     },
             ].map(c => `
               <div class="waiting-icon-card" onclick="navigateTo('${c.page}')">
                 <div class="waiting-icon-img">${c.icon}</div>
@@ -499,54 +520,42 @@ function renderHome() {
     </section>
   `;
 
-  // Initialize Bootstrap carousel + Owl Carousel after HTML is injected
   initHomeCarousels();
 }
 
 // ---- Carousel Init ----
 function initHomeCarousels() {
-  // Bootstrap 5 Banner carousel
+  // Bootstrap – Banner
   const bannerEl = document.getElementById('bannerCarousel');
   if (bannerEl && typeof bootstrap !== 'undefined') {
     new bootstrap.Carousel(bannerEl, { interval: 5000, ride: 'carousel' });
   }
 
-  // Owl Carousel – Digital Cards
-  if (typeof $ !== 'undefined' && $.fn && $.fn.owlCarousel) {
-    $('#digital').owlCarousel({
-      loop: true,
-      margin: 20,
-      nav: false,
-      dots: true,
-      autoplay: true,
-      autoplayTimeout: 3000,
-      autoplayHoverPause: true,
-      responsive: {
-        0:    { items: 1 },
-        576:  { items: 2 },
-        768:  { items: 3 },
-        992:  { items: 4 },
-        1200: { items: 5 }
-      }
-    });
+  // Bootstrap – Ad Banner
+  const addEl = document.getElementById('addCarousel');
+  if (addEl && typeof bootstrap !== 'undefined') {
+    new bootstrap.Carousel(addEl, { interval: 4000, ride: 'carousel' });
+  }
 
-    // Owl Carousel – Trending
-    $('#trending').owlCarousel({
+  // Owl Carousel – Jet Ski & Getaways
+  if (typeof $ !== 'undefined' && $.fn && $.fn.owlCarousel) {
+    const owlOpts = {
       loop: true,
       margin: 20,
       nav: false,
       dots: true,
       autoplay: true,
-      autoplayTimeout: 4000,
+      autoplayTimeout: 3500,
       autoplayHoverPause: true,
       responsive: {
         0:    { items: 1 },
         576:  { items: 2 },
         768:  { items: 3 },
-        992:  { items: 4 },
-        1200: { items: 5 }
+        992:  { items: 4 }
       }
-    });
+    };
+    $('#jet').owlCarousel(owlOpts);
+    $('#getaways').owlCarousel(owlOpts);
   }
 }
 
