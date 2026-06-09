@@ -756,11 +756,11 @@ function renderHome() {
     </section>
 
     <!-- ── CRYPTO ────────────────────────────────────── -->
-    ${state.liveByCategory.crypto.length ? `
-    <section class="py-5" style="background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);">
+   
+    <section class="py-5">
       <div class="container">
         <div class="heading_main" style="text-align:center;">
-          <div class="heading" style="color:#fff;">Crypto <span>Vouchers</span></div>
+          <div class="heading">Crypto <span>Vouchers</span></div>
           <p style="color:rgba(255,255,255,0.6);margin-top:8px;font-size:14px;">Buy crypto vouchers instantly — secure, fast, no wallet needed</p>
         </div>
         <div class="row g-4 d-none d-lg-flex" id="crypto-static-grid">
@@ -772,8 +772,7 @@ function renderHome() {
           </div>
         </div>
       </div>
-    </section>` : ''}
-
+    </section>
     <!-- ── MOBILE RECHARGE ───────────────────────────── -->
     <section class="py-5" style="background:#f0f4ff;">
       <div class="container">
