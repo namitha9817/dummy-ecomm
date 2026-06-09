@@ -610,7 +610,7 @@ function renderHome() {
     </section>
 
     <!-- WHAT'S WAITING -->
-    <section class="section waiting-for-you" style="background: var(--bg-light);">
+    <section class="section waiting-for-you" style="background: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgb(255, 237, 239) 100%);">
       <div class="section-inner">
         <div class="section-header">
           <h2 class="heading">What's <span>Waiting for You</span></h2>
@@ -630,7 +630,7 @@ function renderHome() {
             `).join('')}
           </div>
           <div class="waiting-phone">
-            <img class="waiting-phone-img" src="https://placehold.co/140x280/1a1a2e/ffffff?text=%F0%9F%93%B1" alt="App">
+            <img class="waiting-phone-img" src="https://souksnap.com/images/mobile-fun.png" alt="App">
           </div>
           <div class="waiting-side">
             ${[
