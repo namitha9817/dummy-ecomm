@@ -822,6 +822,10 @@ button { cursor: pointer; border: none; background: none; }
   max-width: 900px;
   margin: 24px auto 0;
 }
+.waiting-for-you{
+  position: relative;
+  z-index: -2;
+}
 
 .waiting-side {
   display: grid;

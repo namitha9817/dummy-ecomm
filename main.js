@@ -610,7 +610,7 @@ function renderHome() {
     </section>
 
     <!-- WHAT'S WAITING -->
-    <section class="section" style="background: var(--bg-light);">
+    <section class="section waiting-for-you" style="background: var(--bg-light);">
       <div class="section-inner">
         <div class="section-header">
           <h2 class="heading">What's <span>Waiting for You</span></h2>
