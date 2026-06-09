@@ -2652,3 +2652,7 @@ body.menu-open::after {
   .heading { font-size: 44px; line-height: 1em; }
   .about .heading { font-size: 44px; }
 }
+
+@media (max-width: 370px) {
+  .heading { font-size: 35px; }
+}
