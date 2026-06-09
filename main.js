@@ -1622,12 +1622,11 @@ function renderTopupConfirmation(result, op, phone, amount) {
 // ============================================================
 
 function renderOrderHistory() {
-  if (!state.user) { navigateTo('signin'); return; }
+
   const main = document.getElementById('main-content');
 
-
   // Only show orders belonging to the currently logged-in user (localStorage)
-  const allOrders = LS.getOrders(state.user.email);
+  const allOrders = state.user ? LS.getOrders(state.user.email) : [];
 
   main.innerHTML = `
     <div class="cart-page">
