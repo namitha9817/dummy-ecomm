@@ -498,7 +498,7 @@ function renderHome() {
           <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">
             <div class="about">
               <div class="heading">Gift
-                <span>
+                <span style="color:white;">
                   <span>Whenever.</span>
                   <span>Moments.</span>
                   <span>Sustainably.</span>
