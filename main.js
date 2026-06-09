@@ -12,15 +12,15 @@ const state = {
 
 // ---- Products Data ----
 const products = [
-  { id: 1, name: 'EA Sports FC 24 12000 FC Points', price: 380, category: 'digital', img: 'https://placehold.co/200x200/0a6b3d/white?text=FC24+12000' },
-  { id: 2, name: 'EA Sports FC 24 5900 FC Points', price: 200, category: 'digital', img: 'https://placehold.co/200x200/1a3a1a/white?text=FC24+5900' },
-  { id: 3, name: 'EA Sports FC 24 2800 FC Points', price: 100, category: 'digital', img: 'https://placehold.co/200x200/0a4a2a/white?text=FC24+2800' },
-  { id: 4, name: 'EA Sports FC 24 Ultimate Edition', price: 389, category: 'digital', img: 'https://placehold.co/200x200/1a2a3a/white?text=FC24+ULT' },
-  { id: 5, name: 'EA Sports FC 24 Standard Edition', price: 299, category: 'digital', img: 'https://placehold.co/200x200/2a1a3a/white?text=FC24+STD' },
-  { id: 6, name: 'EA Sports FC 24 Standard Edition', price: 299, category: 'digital', img: 'https://placehold.co/200x200/2a1a3a/white?text=FC24+STD' },
-  { id: 7, name: "Senua's Saga: Hellblade II Xbox Series X|S - Instant Delivery", price: 199, category: 'digital', img: 'https://placehold.co/200x200/1a0a1a/white?text=Hellblade+II' },
-  { id: 8, name: 'Minecraft Legends Deluxe Edition Xbox Series X|S - Instant Delivery', price: 199, category: 'digital', img: 'https://placehold.co/200x200/2a3a1a/white?text=Minecraft+DLX' },
-  { id: 9, name: 'Minecraft Legends for Windows 10 PC - Instant Delivery', price: 159, category: 'digital', img: 'https://placehold.co/200x200/1a2a0a/white?text=Minecraft+PC' },
+  { id: 28, name: 'EA Sports FC 24 12000 FC Points', price: 380, category: 'digital', img: 'https://souksnap.com/gift_card_images/28/5213-Souksnap.jpg' },
+  { id: 29, name: 'EA Sports FC 24 5900 FC Points', price: 200, category: 'digital', img: 'https://souksnap.com/gift_card_images/29/6437-Souksnap.jpg' },
+  { id: 30, name: 'EA Sports FC 24 2800 FC Points', price: 100, category: 'digital', img: 'https://souksnap.com/gift_card_images/30/6586-Souksnap.jpg' },
+  { id: 31, name: 'EA Sports FC 24 Ultimate Edition', price: 389, category: 'digital', img: 'https://souksnap.com/gift_card_images/31/8171-Souksnap.jpg' },
+  { id: 32, name: 'EA Sports FC 24 Standard Edition', price: 299, category: 'digital', img: 'https://souksnap.com/gift_card_images/32/1987-Souksnap.jpg' },
+  { id: 33, name: 'EA Sports FC 24 Standard Edition', price: 299, category: 'digital', img: 'https://souksnap.com/gift_card_images/33/9430-Souksnap.jpg' },
+  { id: 34, name: "Senua's Saga: Hellblade II Xbox Series X|S - Instant Delivery", price: 199, category: 'digital', img: 'https://souksnap.com/gift_card_images/34/7427-Souksnap.jpg' },
+  { id: 35, name: 'Minecraft Legends Deluxe Edition Xbox Series X|S - Instant Delivery', price: 199, category: 'digital', img: 'https://souksnap.com/gift_card_images/35/8157-Souksnap.jpg' },
+  { id: 36, name: 'Minecraft Legends for Windows 10 PC - Instant Delivery', price: 159, category: 'digital', img: 'https://souksnap.com/gift_card_images/36/7708-Souksnap.jpg' },
   { id: 10, name: 'Thrill-Seekers Jet Ski Package', price: 1200, category: 'jetski', img: 'https://placehold.co/200x200/0a2a4a/white?text=Jet+Ski' },
   { id: 11, name: 'Jet Ski in Fujairah', price: 800, category: 'jetski', img: 'https://placehold.co/200x200/0a1a3a/white?text=Fujairah+Ski' },
   { id: 12, name: 'High-Speed Fun in Abu Dhabi', price: 1900, category: 'jetski', img: 'https://placehold.co/200x200/0a3a5a/white?text=Abu+Dhabi' },
@@ -256,50 +256,131 @@ function productCardHTML(p) {
 // ---- HOME ----
 function renderHome() {
   const main = document.getElementById('main-content');
-  const digitalCards = products.filter(p => p.category === 'digital').slice(0, 5);
-  const jetskiItems = products.filter(p => p.category === 'jetski');
-  const getaways = products.filter(p => p.category === 'getaways');
-  const wellness = products.filter(p => p.category === 'wellness');
-  const tickets = products.filter(p => p.category === 'digital').slice(4);
+  const digitalCards = products.filter(p => p.category === 'digital');
+  const jetskiItems  = products.filter(p => p.category === 'jetski');
+  const getaways     = products.filter(p => p.category === 'getaways');
+  const wellness     = products.filter(p => p.category === 'wellness');
+  const tickets      = products.filter(p => p.category === 'digital').slice(3);
+  const trendingAll  = products.slice(0, 8);
 
   main.innerHTML = `
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-content">
-        <div class="hero-text">
-          <span class="hero-eyebrow">Limited Discount</span>
-          <h1>Purchase now and<br>save big on your<br><em>favorite</em></h1>
-          <p>Discover amazing deals on digital cards, experiences, and more. Shop smart, save big.</p>
-          <button class="btn-primary" onclick="navigateTo('digital')">SHOP GIFT CARDS</button>
-        </div>
-        <div class="hero-image">
-          <img src="https://placehold.co/320x220/e8385a/white?text=Shop+%26+Save" alt="Shopping">
+
+    <!-- ====================================================
+         SECTION 1 — BANNER (Bootstrap carousel)
+    ==================================================== -->
+    <section class="banner">
+      <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="container">
+          <div class="carousel-inner">
+
+            <div class="carousel-item">
+              <div class="row align-items-center">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                  <div class="banner_text">
+                    <div class="sub_head">Limited Discount</div>
+                    <div class="banner_heading">Sell your vouchers in Souksnap Market, register today!</div>
+                    <a href="#" class="btn" onclick="navigateTo('digital');return false;">Shop Gift Card</a>
+                  </div>
+                </div>
+                <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6">
+                  <div class="banner_img">
+                    <img src="https://souksnap.com/images/banner.jpg" class="img-fluid" alt="Banner"
+                         onerror="this.src='https://placehold.co/560x430/f84464/fff?text=Souksnap'">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="carousel-item active">
+              <div class="row align-items-center">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                  <div class="banner_text">
+                    <div class="sub_head">Limited Discount</div>
+                    <div class="banner_heading">Purchase now and save big on your favorite</div>
+                    <a href="#" class="btn" onclick="navigateTo('digital');return false;">Shop Gift Card</a>
+                  </div>
+                </div>
+                <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6">
+                  <div class="banner_img">
+                    <img src="https://souksnap.com/images/banner1.jpg" class="img-fluid" alt="Banner"
+                         onerror="this.src='https://placehold.co/560x430/f84464/fff?text=Shop+%26+Save'">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.carousel-inner -->
+
+          <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- DIGITAL CARD SECTION -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title">Digital <span>Card</span></h2>
+    <!-- ====================================================
+         SECTION 2 — DIGITAL CARD (Owl Carousel)
+    ==================================================== -->
+    <section class="digital_bg">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading">Digital <span>Card</span></div>
         </div>
-        <div class="products-grid">
-          ${digitalCards.map(p => productCardHTML(p)).join('')}
+        <div class="row justify-content-center">
+          <div id="digital" class="owl-carousel p-0 owl-theme">
+            ${digitalCards.map(p => `
+              <div class="item">
+                <div class="digital_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure>
+                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                           onerror="this.src='https://placehold.co/160x160/f0f0f0/999?text=IMG'">
+                    </figure>
+                    ${p.name.substring(0, 20)}
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- TRENDING DARK SECTION -->
-    <section class="section-dark">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title" style="color:white;">What's <s>Trending</s> Today</h2>
+    <!-- ====================================================
+         SECTION 3 — WHAT'S TRENDING (Owl Carousel)
+    ==================================================== -->
+    <section class="trending_bg">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading">What's <span>Trending</span> Today</div>
+        </div>
+        <div class="row justify-content-center">
+          <div id="trending" class="owl-carousel p-0 owl-theme">
+            ${trendingAll.map(p => `
+              <div class="item">
+                <div class="digital_card" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);">
+                  <a href="#" style="color:#fff;"
+                     onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure>
+                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                           onerror="this.src='https://placehold.co/160x160/2b3149/fff?text=IMG'">
+                    </figure>
+                    ${p.name.substring(0, 20)}
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- JET SKI SECTION -->
+    <!-- ====================================================
+         SECTION 4 — JET SKI DEALS
+    ==================================================== -->
     <section class="section" style="background: var(--bg-light);">
       <div class="section-inner">
         <div class="section-header">
@@ -311,7 +392,7 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- BANNER -->
+    <!-- TIMEZONE BANNER -->
     <div class="banner-ad">
       <button class="banner-arrow left">&#8249;</button>
       <div class="banner-ad-inner">
@@ -338,7 +419,7 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- GIFT WHENEVER SECTION -->
+    <!-- GIFT WHENEVER -->
     <section class="gift-section">
       <h2>Gift Whenever.</h2>
       <p>Welcome to Souk Snap, a premier vending solutions provider led by Al Afdal Selling Products By Wellness Within LLC - FZ. Our mission is to transform everyday convenience through cutting-edge vending technology, catering to diverse needs in the UAE and expanding our reach to global markets in the USA and Europe.</p>
@@ -417,6 +498,56 @@ function renderHome() {
       </div>
     </section>
   `;
+
+  // Initialize Bootstrap carousel + Owl Carousel after HTML is injected
+  initHomeCarousels();
+}
+
+// ---- Carousel Init ----
+function initHomeCarousels() {
+  // Bootstrap 5 Banner carousel
+  const bannerEl = document.getElementById('bannerCarousel');
+  if (bannerEl && typeof bootstrap !== 'undefined') {
+    new bootstrap.Carousel(bannerEl, { interval: 5000, ride: 'carousel' });
+  }
+
+  // Owl Carousel – Digital Cards
+  if (typeof $ !== 'undefined' && $.fn && $.fn.owlCarousel) {
+    $('#digital').owlCarousel({
+      loop: true,
+      margin: 20,
+      nav: false,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 3000,
+      autoplayHoverPause: true,
+      responsive: {
+        0:    { items: 1 },
+        576:  { items: 2 },
+        768:  { items: 3 },
+        992:  { items: 4 },
+        1200: { items: 5 }
+      }
+    });
+
+    // Owl Carousel – Trending
+    $('#trending').owlCarousel({
+      loop: true,
+      margin: 20,
+      nav: false,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 4000,
+      autoplayHoverPause: true,
+      responsive: {
+        0:    { items: 1 },
+        576:  { items: 2 },
+        768:  { items: 3 },
+        992:  { items: 4 },
+        1200: { items: 5 }
+      }
+    });
+  }
 }
 
 // ---- ABOUT ----
