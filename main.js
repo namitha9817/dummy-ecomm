@@ -720,7 +720,7 @@ function renderHome() {
     </section>
 
     <!-- ── TICKETS / ENTERTAINMENT ──────────────────── -->
-    <section class="gray_bg py-5" style="background:#f9f8f8;">
+    <section class="gray_bg py-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Tickets</div>
