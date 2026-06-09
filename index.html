@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Souksnap – Purchase now and save big on your favorite</title>
+  <meta name="description" content="Souksnap - A premier vending solutions provider. Shop digital cards, jet ski packages, getaways, wellness and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Logo SVG inline */
+    .logo-leaf {
+      display: inline-block;
+      font-size: 26px;
+      line-height: 1;
+      margin-right: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="header">
+    <div class="header-inner">
+      <!-- Logo -->
+      <a class="logo" href="#" onclick="navigateTo('home');return false;">
+        <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4C12 4 7 9 7 16s5 12 11 12 11-5 11-12S24 4 18 4z" fill="#e8385a" opacity="0.15"/>
+          <path d="M18 6c-5 0-9 4.5-9 10s4 10 9 10 9-4.5 9-10S23 6 18 6z" fill="none" stroke="#e8385a" stroke-width="1.5"/>
+          <path d="M14 18c0-3.3 2.7-6 6-6" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+          <path d="M22 14c0 3.3-2.7 6-6 6" stroke="#e8385a" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="2" fill="#e8385a"/>
+          <path d="M18 28v4" stroke="#e8385a" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M15 30h6" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Souksnap</span>
+      </a>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Search"
+          id="search-input"
+          onkeydown="if(event.key==='Enter') doSearch(this.value)"
+        >
+      </div>
+
+      <!-- Actions -->
+      <div class="header-actions" id="header-actions">
+        <button class="btn-signin" onclick="navigateTo('signin')">SIGN IN</button>
+        <div class="cart-wrapper">
+          <div class="cart-btn" onclick="toggleCart()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="cart-badge" id="cart-badge" style="display:none;">0</span>
+          </div>
+          <div class="cart-dropdown hidden" id="cart-dropdown"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <nav class="nav-bar">
+    <div class="nav-inner" id="nav-links">
+      <!-- Populated by JS -->
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <main id="main-content">
+    <!-- Populated by JS -->
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <!-- Customer Service -->
+      <div class="footer-section">
+        <h4>Customer Service</h4>
+        <div class="footer-contact-item">
+          <div class="footer-contact-icon">💬</div>
+          <div>
+            <p>Get Support</p>
+            <strong>support@souksnap.com</strong>
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-icon">📞</div>
+          <div>
+            <p>Call Us</p>
+            <strong>+971 582096944</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#" onclick="navigateTo('home');return false;">Home</a></li>
+          <li><a href="#" onclick="navigateTo('about');return false;">About Us</a></li>
+          <li><a href="#" onclick="navigateTo('digital');return false;">Supplier</a></li>
+          <li><a href="#" onclick="navigateTo('contact');return false;">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div class="footer-section">
+        <h4>Legal Information</h4>
+        <ul>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Product Delivery Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Brand -->
+      <div class="footer-section">
+        <div class="footer-logo">
+          <div class="footer-logo-text">
+            <svg width="28" height="28" viewBox="0 0 36 36" fill="none" style="vertical-align:middle;margin-right:6px;">
+              <path d="M18 6c-5 0-9 4.5-9 10s4 10 9 10 9-4.5 9-10S23 6 18 6z" fill="none" stroke="#e8385a" stroke-width="1.5"/>
+              <path d="M14 18c0-3.3 2.7-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <path d="M22 14c0 3.3-2.7 6-6 6" stroke="#e8385a" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="18" cy="18" r="2" fill="#e8385a"/>
+            </svg>
+            Souksnap
+          </div>
+        </div>
+
+        <div class="footer-social">
+          <a href="#" class="social-btn" title="Facebook">f</a>
+          <a href="#" class="social-btn" title="Instagram">📷</a>
+          <a href="#" class="social-btn" title="Twitter">🐦</a>
+          <a href="#" class="social-btn" title="LinkedIn">in</a>
+        </div>
+
+        <div class="payment-methods">
+          <span>We accept</span>
+          <div class="payment-logo" style="color:#1a1f71;letter-spacing:-0.5px;font-size:13px;">VISA</div>
+          <div class="payment-logo" style="background:linear-gradient(135deg,#eb001b,#f79e1b);color:white;font-size:12px;">MC</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      Copyright © 2025 Souksnap. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
