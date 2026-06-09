@@ -29,11 +29,11 @@ const products = [
   { id: 25, name: '5-Star Weekday Vacation Stay at Radisson Blu Fujairah', price: 750, category: 'getaways', img: 'https://souksnap.com/gift_card_images/25/4407-Souksnap.jpg' },
   { id: 26, name: '5 Star Winter Stay at Al Bahar Hotel and Resort', price: 1050, category: 'getaways', img: 'https://souksnap.com/gift_card_images/26/6362-Souksnap.jpg' },
   { id: 27, name: '1-Night All Inclusive Stay at Danat Al Ain', price: 1350, category: 'getaways', img: 'https://souksnap.com/gift_card_images/27/7436-Souksnap.jpg' },
-  { id: 18, name: 'Massage + Spa Week', price: 155, category: 'wellness', img: 'https://placehold.co/200x200/4a2a3a/white?text=Spa+Week' },
-  { id: 19, name: 'Massage + Full Day Package', price: 650, category: 'wellness', img: 'https://placehold.co/200x200/3a1a2a/white?text=Full+Day' },
-  { id: 20, name: 'DoubleTree by Hilton', price: 600, category: 'wellness', img: 'https://placehold.co/200x200/2a0a1a/white?text=DoubleTree' },
-  { id: 21, name: 'All-Day Pilés at Phar', price: 200, category: 'wellness', img: 'https://placehold.co/200x200/3a2a1a/white?text=All+Day' },
-  { id: 22, name: '5 Star Thai Relaxati', price: 450, category: 'wellness', img: 'https://placehold.co/200x200/2a1a0a/white?text=Thai+Spa' },
+  { id: 15, name: 'Massage + Spa Week Offer', price: 750, category: 'wellness', img: 'https://souksnap.com/gift_card_images/15/9017-Souksnap.jpg' },
+  { id: 16, name: 'Massage + Full Day Pass at Cleopatra\'s Spa', price: 850, category: 'wellness', img: 'https://souksnap.com/gift_card_images/16/8696-Souksnap.jpg' },
+  { id: 17, name: 'DoubleTree by Hilton JBR Luxury Massage', price: 600, category: 'wellness', img: 'https://souksnap.com/gift_card_images/17/8134-Souksnap.jpg' },
+  { id: 18, name: 'All-Day Pass at Pharaoh\'s Club', price: 200, category: 'wellness', img: 'https://souksnap.com/gift_card_images/18/7631-Souksnap.jpg' },
+  { id: 19, name: '5 Star Thai Relaxation Package at Sheraton Sharjah', price: 450, category: 'wellness', img: 'https://souksnap.com/gift_card_images/19/9007-Souksnap.jpg' },
 ];
 
 // ---- DOM Ready ----
@@ -446,26 +446,60 @@ function renderHome() {
       <p>Welcome to Souk Snap, a premier vending solutions provider led by Al Afdal Selling Products By Wellness Within LLC - FZ. Our mission is to transform everyday convenience through cutting-edge vending technology, catering to diverse needs in the UAE and expanding our reach to global markets in the USA and Europe.</p>
     </section>
 
-    <!-- WELLNESS -->
-    <section class="section" style="background: var(--bg-light);">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title"><span>Wellness</span></h2>
+    <!-- ====================================================
+         WELLNESS  (Owl Carousel + gift_card style)
+    ==================================================== -->
+    <section class="pt-0 pb-5">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading mb-0">Wellness</div>
         </div>
-        <div class="products-grid">
-          ${wellness.map(p => productCardHTML(p)).join('')}
+        <div class="row justify-content-center">
+          <div id="wellness" class="owl-carousel p-0 owl-theme">
+            ${wellness.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure>
+                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                           onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'">
+                    </figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- TICKETS -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-header">
-          <h2 class="section-title"><span>Tickets</span></h2>
+    <!-- ====================================================
+         TICKETS  (Owl Carousel + gift_card style, gray bg)
+    ==================================================== -->
+    <section class="gray_bg py-5" style="background:#f9f8f8;">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading mb-0">Tickets</div>
         </div>
-        <div class="products-grid">
-          ${tickets.slice(0, 5).map(p => productCardHTML(p)).join('')}
+        <div class="row justify-content-center">
+          <div id="ticket" class="owl-carousel p-0 owl-theme">
+            ${tickets.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure>
+                      <img src="${p.img}" class="img-fluid" alt="${p.name}"
+                           onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'">
+                    </figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -556,6 +590,8 @@ function initHomeCarousels() {
     };
     $('#jet').owlCarousel(owlOpts);
     $('#getaways').owlCarousel(owlOpts);
+    $('#wellness').owlCarousel(owlOpts);
+    $('#ticket').owlCarousel(owlOpts);
   }
 }
 
