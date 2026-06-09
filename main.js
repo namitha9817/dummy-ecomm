@@ -555,8 +555,42 @@ function addProductToCart(productId) {
     }
   }
 
+  // Gift tab validation — if "This is a gift" tab is active
+  const giftTab = document.getElementById('tab-gift');
+  if (giftTab && giftTab.classList.contains('active')) {
+    const gEmail = document.getElementById('gift-email')?.value.trim();
+    const gName  = document.getElementById('gift-name')?.value.trim();
+    const gDate  = document.getElementById('gift-date')?.value;
+    let giftValid = true;
+
+    if (!gEmail) {
+      setGiftError('gift-email', 'Recipient email is required.');
+      giftValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(gEmail)) {
+      setGiftError('gift-email', 'Please enter a valid email address.');
+      giftValid = false;
+    }
+    if (!gName) {
+      setGiftError('gift-name', 'Recipient name is required.');
+      giftValid = false;
+    }
+    if (!gDate) {
+      setGiftError('gift-date', 'Please select a delivery date.');
+      giftValid = false;
+    }
+    if (!giftValid) return;
+  }
+
   addToCart({ ...product, price: finalPrice });
 }
+
+function setGiftError(id, msg) {
+  const el    = document.getElementById(`err-${id}`);
+  const input = document.getElementById(id);
+  if (el)    el.textContent = msg;
+  if (input) input.style.borderColor = msg ? '#e74c3c' : '';
+}
+function clearGiftError(id) { setGiftError(id, ''); }
 
 function removeFromCart(id) {
   state.cartItems = state.cartItems.filter(i => i.id !== id);
@@ -1517,10 +1551,21 @@ function renderGiftDetail(product) {
               </div>
 
               <div class="gift-tab-content" id="tab-gift">
-                <div class="mb-3"><input type="email" class="gd-input" placeholder="Their Email" id="recipient-email"></div>
-                <div class="mb-3"><input type="text"  class="gd-input" placeholder="Your Name/s"></div>
-                <div class="mb-3"><textarea class="gd-input" placeholder="Add a Personal Message" rows="3"></textarea></div>
-                <div class="mb-3"><input type="date"  class="gd-input"></div>
+                <div class="mb-3">
+                  <input type="email" class="gd-input" placeholder="Recipient Email *" id="gift-email" oninput="clearGiftError('gift-email')">
+                  <div class="field-error" id="err-gift-email"></div>
+                </div>
+                <div class="mb-3">
+                  <input type="text" class="gd-input" placeholder="Recipient Name *" id="gift-name" oninput="clearGiftError('gift-name')">
+                  <div class="field-error" id="err-gift-name"></div>
+                </div>
+                <div class="mb-3">
+                  <textarea class="gd-input" placeholder="Personal Message (optional)" id="gift-message" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                  <input type="date" class="gd-input" id="gift-date" oninput="clearGiftError('gift-date')">
+                  <div class="field-error" id="err-gift-date"></div>
+                </div>
               </div>
 
               <div class="gift-tab-content active" id="tab-me">
