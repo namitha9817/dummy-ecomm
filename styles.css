@@ -2649,5 +2649,6 @@ body.menu-open::after {
    RESPONSIVE — ≤450px headings
    ============================================================ */
 @media (max-width: 450px) {
-  .heading { font-size: 44px; }
+  .heading { font-size: 44px; line-height: 1em; }
+  .about .heading { font-size: 44px; }
 }
