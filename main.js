@@ -357,28 +357,43 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 4 — JET SKI DEALS  (static 4 products)
+         SECTION 4 — JET SKI DEALS
+         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
     ==================================================== -->
     <section class="py-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
         </div>
-        <div class="row g-4">
-          ${jetskiItems.slice(0, 4).map(p => `
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+        <!-- Static grid — visible md and above -->
+        <div class="row g-4 d-none d-md-flex">
+          ${jetskiItems.slice(0, 5).map((p, i) => `
+            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                  <figure>
-                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                         onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'">
-                  </figure>
+                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
                 </a>
               </div>
             </div>
           `).join('')}
+        </div>
+        <!-- Carousel — visible sm and below -->
+        <div class="d-md-none">
+          <div id="jet-mob" class="owl-carousel owl-theme">
+            ${jetskiItems.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Jet+Ski'"></figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -410,28 +425,43 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         SECTION 6 — GETAWAYS  (static 4 products)
+         SECTION 6 — GETAWAYS
+         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
     ==================================================== -->
     <section class="pb-0 pt-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
         </div>
-        <div class="row g-4">
-          ${getaways.slice(0, 4).map(p => `
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+        <!-- Static grid — visible md and above -->
+        <div class="row g-4 d-none d-md-flex">
+          ${getaways.slice(0, 5).map((p, i) => `
+            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                  <figure>
-                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                         onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'">
-                  </figure>
+                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
                 </a>
               </div>
             </div>
           `).join('')}
+        </div>
+        <!-- Carousel — visible sm and below -->
+        <div class="d-md-none">
+          <div id="getaways-mob" class="owl-carousel owl-theme">
+            ${getaways.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Getaway'"></figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -467,22 +497,21 @@ function renderHome() {
     </section>
 
     <!-- ====================================================
-         WELLNESS  (static 4 products)
+         WELLNESS
+         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
     ==================================================== -->
     <section class="pt-0 pb-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Wellness</div>
         </div>
-        <div class="row g-4">
-          ${wellness.slice(0, 4).map(p => `
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+        <!-- Static grid — visible md and above -->
+        <div class="row g-4 d-none d-md-flex">
+          ${wellness.slice(0, 5).map((p, i) => `
+            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                  <figure>
-                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                         onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'">
-                  </figure>
+                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
                 </a>
@@ -490,32 +519,63 @@ function renderHome() {
             </div>
           `).join('')}
         </div>
+        <!-- Carousel — visible sm and below -->
+        <div class="d-md-none">
+          <div id="wellness-mob" class="owl-carousel owl-theme">
+            ${wellness.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/f0e8ff/333?text=Wellness'"></figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- ====================================================
-         TICKETS  (static 4 products, gray bg)
+         TICKETS
+         lg+: 5 cols static | md: 4 cols static | sm/xs: carousel
     ==================================================== -->
     <section class="gray_bg py-5" style="background:#f9f8f8;">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Tickets</div>
         </div>
-        <div class="row g-4">
-          ${tickets.slice(0, 4).map(p => `
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+        <!-- Static grid — visible md and above -->
+        <div class="row g-4 d-none d-md-flex">
+          ${tickets.slice(0, 5).map((p, i) => `
+            <div class="col-lg col-md-3${i === 4 ? ' d-none d-lg-block' : ''}">
               <div class="gift_card">
                 <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
-                  <figure>
-                    <img src="${p.img}" class="img-fluid" alt="${p.name}"
-                         onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'">
-                  </figure>
+                  <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
                   <div>${p.name.substring(0, 20)}</div>
                   <div class="price"><span>AED</span> ${p.price}</div>
                 </a>
               </div>
             </div>
           `).join('')}
+        </div>
+        <!-- Carousel — visible sm and below -->
+        <div class="d-md-none">
+          <div id="ticket-mob" class="owl-carousel owl-theme">
+            ${tickets.map(p => `
+              <div class="item">
+                <div class="gift_card">
+                  <a href="#" onclick="navigateTo('gift-detail',{product:${JSON.stringify(JSON.stringify(p))}});return false;">
+                    <figure><img src="${p.img}" class="img-fluid" alt="${p.name}" onerror="this.src='https://placehold.co/300x220/e8f0ff/333?text=Ticket'"></figure>
+                    <div>${p.name.substring(0, 20)}</div>
+                    <div class="price"><span>AED</span> ${p.price}</div>
+                  </a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -604,7 +664,21 @@ function initHomeCarousels() {
         992:  { items: 4 }
       }
     };
-    // jet, getaways, wellness, ticket now use static grids — no carousel needed
+    // Mobile-only carousels (sm and below)
+    const mobOpts = {
+      loop: true,
+      margin: 16,
+      nav: false,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 3500,
+      autoplayHoverPause: true,
+      items: 1
+    };
+    $('#jet-mob').owlCarousel(mobOpts);
+    $('#getaways-mob').owlCarousel(mobOpts);
+    $('#wellness-mob').owlCarousel(mobOpts);
+    $('#ticket-mob').owlCarousel(mobOpts);
   }
 }
 
