@@ -629,8 +629,7 @@ function renderHome() {
                 </div>
                 <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6">
                   <div class="banner_img">
-                    <img src="https://souksnap.com/images/banner.jpg" class="img-fluid" alt="Banner"
-                         onerror="this.src='https://placehold.co/560x430/f84464/fff?text=NexCards'">
+                    <img src="imgs/banner1.jpg" class="img-fluid" alt="Banner">
                   </div>
                 </div>
               </div>
@@ -646,8 +645,7 @@ function renderHome() {
                 </div>
                 <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6">
                   <div class="banner_img">
-                    <img src="https://souksnap.com/images/banner1.jpg" class="img-fluid" alt="Banner"
-                         onerror="this.src='https://placehold.co/560x430/ffffff/333?text=Shop+%26+Save'">
+                    <img src="imgs/banner.jpg" class="img-fluid" alt="Banner">
                   </div>
                 </div>
               </div>
@@ -716,12 +714,10 @@ function renderHome() {
         <div id="addCarousel" class="carousel slide pointer-event" data-bs-ride="carousel">
           <div class="carousel-inner">
             <div class="carousel-item">
-              <img src="https://souksnap.com/images/add.png" class="img-fluid" alt="Ad Banner"
-                   onerror="this.src='https://placehold.co/1200x200/2b3149/fff?text=Special+Offer'">
+              <img src="imgs/gift-banner.webp" class="img-fluid" alt="Ad Banner">
             </div>
             <div class="carousel-item active">
-              <img src="https://souksnap.com/images/add.png" class="img-fluid" alt="Ad Banner"
-                   onerror="this.src='https://placehold.co/1200x200/f84464/fff?text=Special+Offer'">
+              <img src="imgs/amazon-gift.jpg" class="img-fluid" alt="Ad Banner">
             </div>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#addCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
@@ -837,46 +833,45 @@ function renderHome() {
         <div class="row justify-content-center">
           <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <div class="waiting_row">
-              <div class="waiting" onclick="navigateTo('digital')">
-                <figure><img src="https://souksnap.com/images/digital-card-icon.png" class="img-fluid" alt="Digital Card" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💳'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/digital-card-icon.png" class="img-fluid" alt="Digital Card"></figure>
                 Digital Card
               </div>
-              <div class="waiting" onclick="navigateTo('digital')">
-                <figure><img src="https://souksnap.com/images/ticket-icon.png" class="img-fluid" alt="Tickets" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎟'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/ticket-icon.png" class="img-fluid" alt="Tickets"></figure>
                 Tickets
               </div>
-              <div class="waiting" onclick="navigateTo('jetski')">
-                <figure><img src="https://souksnap.com/images/jet-ski-icon.png" class="img-fluid" alt="Jet Ski" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🛥'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/jet-ski-icon.png" class="img-fluid" alt="Jet Ski"></figure>
                 Jet Ski
               </div>
-              <div class="waiting" onclick="navigateTo('wellness')">
-                <figure><img src="https://souksnap.com/images/wellness-icon.png" class="img-fluid" alt="Wellness" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💆'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/wellness-icon.png" class="img-fluid" alt="Wellness"></figure>
                 Wellness
               </div>
             </div>
           </div>
           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div class="waiting_center">
-              <img src="https://souksnap.com/images/mobile-fun.png" class="img-fluid" alt="Mobile App"
-                   onerror="this.src='https://placehold.co/320x560/1a1a2e/ffffff?text=App'">
+              <img src="imgs/mobile-fun.png" class="img-fluid" alt="Mobile App">
             </div>
           </div>
           <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <div class="waiting_row">
-              <div class="waiting" onclick="navigateTo('digital')">
-                <figure><img src="https://souksnap.com/images/kids-icon.png" class="img-fluid" alt="Kids" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎮'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/kids-icon.png" class="img-fluid" alt="Kids"></figure>
                 Kids
               </div>
-              <div class="waiting" onclick="navigateTo('getaways')">
-                <figure><img src="https://souksnap.com/images/getaways-icon.png" class="img-fluid" alt="Getaways" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🏝'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/getaways-icon.png" class="img-fluid" alt="Getaways"></figure>
                 Getaways
               </div>
-              <div class="waiting" onclick="navigateTo('blackfriday')">
-                <figure><img src="https://souksnap.com/images/black-friday-icon.png" class="img-fluid" alt="Black Friday" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=🎁'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/black-friday-icon.png" class="img-fluid" alt="Black Friday"></figure>
                 Black Friday
               </div>
-              <div class="waiting" onclick="navigateTo('digital')">
-                <figure><img src="https://souksnap.com/images/beauty-icon.png" class="img-fluid" alt="Beauty" onerror="this.src='https://placehold.co/50x50/fdeef1/f84464?text=💄'"></figure>
+              <div class="waiting">
+                <figure><img src="imgs/beauty-icon.png" class="img-fluid" alt="Beauty"></figure>
                 Beauty
               </div>
             </div>
@@ -1636,7 +1631,7 @@ function renderOrderHistory() {
             <h1 style="font-weight:700;margin-bottom:4px;">My <span style="color:#f84464;">Orders</span></h1>
             <p style="color:#888;margin:0;">${allOrders.length} order${allOrders.length !== 1 ? 's' : ''} found</p>
           </div>
-          <button class="gd-cart-btn" style="max-width:160px;" onclick="navigateTo('home')">← Back to Shop</button>
+          <button class="gd-cart-btn" style="max-width:200px;" onclick="navigateTo('home')">← Back to Shop</button>
         </div>
 
         ${allOrders.length === 0 ? `
