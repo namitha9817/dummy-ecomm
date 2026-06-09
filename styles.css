@@ -1188,7 +1188,6 @@ button { cursor: pointer; border: none; background: none; }
   border-radius: 1rem;
   padding: 24px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-  display: flex;
   align-items: center;
   justify-content: center;
   min-height: 320px;

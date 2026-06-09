@@ -961,7 +961,7 @@ function renderAbout() {
           <p>We began our journey in 2023, operating out of a single office in Jumeirah Lake Towers (JLT), Dubai. With a focus on seamless shopping experiences and dependable service, we quickly gained traction in the UAE's fast-growing e-commerce space.</p>
         </div>
         <div class="about-img" style="background:linear-gradient(135deg,#e8f4f8,#fdeef1);">
-          <img src="https://placehold.co/460x300/e8f4f8/333?text=Team+Meeting" alt="Team" style="border-radius:12px;width:100%;height:300px;object-fit:cover;">
+          <img src="../imgs/about.jpg" alt="Team" style="border-radius:12px;width:100%;height:300px;object-fit:cover;">
         </div>
       </div>
     </section>
@@ -1889,9 +1889,9 @@ function renderCategoryPage({ title, emoji, subtitle, bg, textColor, prods, grid
     <div>
       <!-- Hero banner -->
       <div style="background:${bg};padding:52px 24px;text-align:center;">
-        <div style="font-size:52px;margin-bottom:14px;">${emoji}</div>
+        <div style="font-size:52px;margin-bottom:14px;color:#fff">${emoji}</div>
         <h1 style="color:${textColor || '#fff'};font-weight:800;margin:0;font-size:32px;">${title}</h1>
-        <p style="color:${textColor ? textColor + 'aa' : 'rgba(255,255,255,0.65)'};margin:10px 0 0;font-size:15px;">${subtitle}</p>
+        <p style="color:${textColor ? textColor + 'aa' : '#fff'};margin:10px 0 0;font-size:15px;">${subtitle}</p>
       </div>
 
       <!-- Products -->
