@@ -8,7 +8,14 @@ const state = {
   cartItems: [],
   user: null,
   cartOpen: false,
-  liveProducts: [],        // populated from Reloadly API
+  liveProducts: [],        // all Reloadly products (for digital page)
+  liveByCategory: {        // grouped by Reloadly category
+    gaming:        [],
+    entertainment: [],
+    shopping:      [],
+    crypto:        [],
+    payment:       []
+  },
   liveProductsLoaded: false,
   accountBalance: null
 };
@@ -94,18 +101,28 @@ function mapReloadlyProduct(p) {
   };
 }
 
-// Fetch live gift card products from Reloadly (via backend)
+// Fetch ALL live gift card products from Reloadly, grouped by category
 async function fetchLiveProducts() {
   try {
-    const data = await api.get('/giftcards/products?countryCode=AE&size=20&page=1');
-    const content = data.content || [];
-    state.liveProducts      = content.map(mapReloadlyProduct);
-    state.liveProductsLoaded = true;
-    console.log(`✅ Loaded ${state.liveProducts.length} live products from Reloadly`);
+    const data = await api.get('/giftcards/products?countryCode=AE&size=100&page=1');
+    const all  = (data.content || []).map(mapReloadlyProduct);
 
-    // Refresh digital section if user is already on home page
-    if (state.currentPage === 'home') updateHomeDigitalSection();
-    // Refresh digital page if open
+    state.liveProducts = all;
+
+    // Group by Reloadly category name
+    state.liveByCategory = {
+      gaming:        all.filter(p => p.categoryName === 'Gaming'),
+      entertainment: all.filter(p => p.categoryName === 'Entertainment'),
+      shopping:      all.filter(p => p.categoryName === 'Shopping'),
+      crypto:        all.filter(p => p.categoryName === 'Crypto'),
+      payment:       all.filter(p => p.categoryName === 'Payment Cards'),
+    };
+
+    state.liveProductsLoaded = true;
+    console.log(`✅ Loaded ${all.length} Reloadly products`);
+    console.log(`   Gaming: ${state.liveByCategory.gaming.length} | Entertainment: ${state.liveByCategory.entertainment.length} | Shopping: ${state.liveByCategory.shopping.length}`);
+
+    if (state.currentPage === 'home')    updateAllHomeSections();
     if (state.currentPage === 'digital') renderDigital();
 
   } catch (err) {
@@ -133,16 +150,15 @@ function findProduct(id) {
       || null;
 }
 
-// After live products load, patch just the digital cards on home page
-function updateHomeDigitalSection() {
-  const staticGrid = document.getElementById('digital-static-grid');
-  const mobCarousel = document.getElementById('digital-mob');
+// Generic helper — patches a static grid + owl carousel with new products
+function patchSection(staticGridId, mobCarouselId, prods, style) {
+  const staticGrid  = document.getElementById(staticGridId);
+  const mobCarousel = document.getElementById(mobCarouselId);
   if (!staticGrid && !mobCarousel) return;
 
-  const prods = (state.liveProducts.length ? state.liveProducts : products.filter(p => p.category === 'digital'))
-                .slice(0, 5);
+  const isDigital = style === 'digital';
 
-  const cardHTML = (p, i) => `
+  const cardHTML = (p, i) => isDigital ? `
     <div class="digital_card digital_card--${(i % 4) + 1}">
       <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
         <figure>
@@ -152,10 +168,21 @@ function updateHomeDigitalSection() {
         <span>${p.name.substring(0, 22)}</span>
         ${p.source === 'reloadly' ? '<span class="rl-badge">Live</span>' : ''}
       </a>
+    </div>` : `
+    <div class="gift_card">
+      <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
+        <figure><img src="${p.img}" class="img-fluid" alt="${p.name}"
+             onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Product'"></figure>
+        <div>${p.name.substring(0, 28)}</div>
+        <div class="price">
+          <span>${p.currency || 'AED'}</span> ${p.price}
+          ${p.source === 'reloadly' ? '<span class="rl-badge" style="float:right;">Live</span>' : ''}
+        </div>
+      </a>
     </div>`;
 
   if (staticGrid) {
-    staticGrid.innerHTML = prods.map((p, i) =>
+    staticGrid.innerHTML = prods.slice(0, 5).map((p, i) =>
       `<div class="col-lg">${cardHTML(p, i)}</div>`
     ).join('');
   }
@@ -171,6 +198,37 @@ function updateHomeDigitalSection() {
       $(mobCarousel).owlCarousel(getMobOwlOpts());
     }
   }
+}
+
+// Update ALL home sections with live Reloadly products
+function updateAllHomeSections() {
+  const s = state.liveByCategory;
+
+  // Digital Cards → all live products
+  const digitalProds = state.liveProducts.length
+    ? state.liveProducts
+    : products.filter(p => p.category === 'digital');
+  patchSection('digital-static-grid', 'digital-mob', digitalProds, 'digital');
+
+  // Jet Ski, Deals → Gaming (fallback: static jetski)
+  const jetskiProds = s.gaming.length
+    ? s.gaming
+    : products.filter(p => p.category === 'jetski');
+  patchSection('jetski-static-grid', 'jet-mob', jetskiProds, 'gift');
+
+  // Getaways → Shopping (fallback: static getaways)
+  const getawayProds = s.shopping.length
+    ? s.shopping
+    : products.filter(p => p.category === 'getaways');
+  patchSection('getaways-static-grid', 'getaways-mob', getawayProds, 'gift');
+
+  // Tickets → Entertainment (fallback: static digital)
+  const ticketProds = s.entertainment.length
+    ? s.entertainment
+    : products.filter(p => p.category === 'digital').slice(3);
+  patchSection('tickets-static-grid', 'ticket-mob', ticketProds, 'gift');
+
+  // Wellness → no Reloadly match, stays static (no patch needed)
 }
 
 // ── DOM Ready ────────────────────────────────────────────────
@@ -444,17 +502,15 @@ function getMobOwlOpts() {
 // ============================================================
 
 function renderHome() {
-  const main        = document.getElementById('main-content');
-  // Use live products if available, else static
-  const digitalCards = (state.liveProducts.length
-    ? state.liveProducts
-    : products.filter(p => p.category === 'digital')
-  ).slice(0, 5);
+  const main = document.getElementById('main-content');
+  const s    = state.liveByCategory;
 
-  const jetskiItems  = products.filter(p => p.category === 'jetski');
-  const getaways     = products.filter(p => p.category === 'getaways');
-  const wellness     = products.filter(p => p.category === 'wellness');
-  const tickets      = products.filter(p => p.category === 'digital').slice(3);
+  // Each section uses live data if loaded, else static fallback
+  const digitalCards = (state.liveProducts.length ? state.liveProducts : products.filter(p => p.category === 'digital')).slice(0, 5);
+  const jetskiItems  = s.gaming.length        ? s.gaming        : products.filter(p => p.category === 'jetski');
+  const getaways     = s.shopping.length      ? s.shopping      : products.filter(p => p.category === 'getaways');
+  const wellness     = products.filter(p => p.category === 'wellness');  // always static
+  const tickets      = s.entertainment.length ? s.entertainment : products.filter(p => p.category === 'digital').slice(3);
 
   const giftCardHTML = (p, i) => `
     <div class="digital_card digital_card--${(i % 4) + 1}">
@@ -468,13 +524,16 @@ function renderHome() {
       </a>
     </div>`;
 
-  const giftRow = (p, i) => `
+  const giftRow = (p) => `
     <div class="gift_card">
       <a href="#" onclick="navigateTo('gift-detail',{productId:${p.id}});return false;">
         <figure><img src="${p.img}" class="img-fluid" alt="${p.name}"
              onerror="this.src='https://placehold.co/300x220/e8f4f8/333?text=Product'"></figure>
         <div>${p.name.substring(0, 28)}</div>
-        <div class="price"><span>AED</span> ${p.price}</div>
+        <div class="price">
+          <span>${p.currency || 'AED'}</span> ${p.price}
+          ${p.source === 'reloadly' ? '<span class="rl-badge" style="float:right;margin-top:2px;">Live</span>' : ''}
+        </div>
       </a>
     </div>`;
 
@@ -559,18 +618,19 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- ── JET SKI ────────────────────────────────────── -->
+    <!-- ── JET SKI / GAMING ─────────────────────────── -->
     <section class="py-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Jet <span>Ski, Deals</span></div>
+          ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
-        <div class="row g-4 d-none d-lg-flex">
-          ${jetskiItems.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
+        <div class="row g-4 d-none d-lg-flex" id="jetski-static-grid">
+          ${jetskiItems.slice(0, 5).map(p => `<div class="col-lg">${giftRow(p)}</div>`).join('')}
         </div>
         <div class="d-lg-none">
           <div id="jet-mob" class="owl-carousel owl-theme">
-            ${jetskiItems.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
+            ${jetskiItems.map(p => `<div class="item">${giftRow(p)}</div>`).join('')}
           </div>
         </div>
       </div>
@@ -596,18 +656,19 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- ── GETAWAYS ───────────────────────────────────── -->
+    <!-- ── GETAWAYS / SHOPPING ───────────────────────── -->
     <section class="pb-0 pt-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Getaways on, <span>Souksnap</span></div>
+          ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
-        <div class="row g-4 d-none d-lg-flex">
-          ${getaways.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
+        <div class="row g-4 d-none d-lg-flex" id="getaways-static-grid">
+          ${getaways.slice(0, 5).map(p => `<div class="col-lg">${giftRow(p)}</div>`).join('')}
         </div>
         <div class="d-lg-none">
           <div id="getaways-mob" class="owl-carousel owl-theme">
-            ${getaways.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
+            ${getaways.map(p => `<div class="item">${giftRow(p)}</div>`).join('')}
           </div>
         </div>
       </div>
@@ -641,35 +702,36 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- ── WELLNESS ───────────────────────────────────── -->
+    <!-- ── WELLNESS (static only — no Reloadly match) ── -->
     <section class="pt-0 pb-5">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Wellness</div>
         </div>
         <div class="row g-4 d-none d-lg-flex">
-          ${wellness.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
+          ${wellness.slice(0, 5).map(p => `<div class="col-lg">${giftRow(p)}</div>`).join('')}
         </div>
         <div class="d-lg-none">
           <div id="wellness-mob" class="owl-carousel owl-theme">
-            ${wellness.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
+            ${wellness.map(p => `<div class="item">${giftRow(p)}</div>`).join('')}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── TICKETS ────────────────────────────────────── -->
+    <!-- ── TICKETS / ENTERTAINMENT ──────────────────── -->
     <section class="gray_bg py-5" style="background:#f9f8f8;">
       <div class="container">
         <div class="heading_main">
           <div class="heading mb-0">Tickets</div>
+          ${!state.liveProductsLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading live products…</div>' : ''}
         </div>
-        <div class="row g-4 d-none d-lg-flex">
-          ${tickets.slice(0, 5).map((p, i) => `<div class="col-lg">${giftRow(p, i)}</div>`).join('')}
+        <div class="row g-4 d-none d-lg-flex" id="tickets-static-grid">
+          ${tickets.slice(0, 5).map(p => `<div class="col-lg">${giftRow(p)}</div>`).join('')}
         </div>
         <div class="d-lg-none">
           <div id="ticket-mob" class="owl-carousel owl-theme">
-            ${tickets.map((p, i) => `<div class="item">${giftRow(p, i)}</div>`).join('')}
+            ${tickets.map(p => `<div class="item">${giftRow(p)}</div>`).join('')}
           </div>
         </div>
       </div>
