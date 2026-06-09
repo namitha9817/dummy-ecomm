@@ -436,10 +436,34 @@ function renderHome() {
       </div>
     </section>
 
-    <!-- GIFT WHENEVER -->
-    <section class="gift-section">
-      <h2>Gift Whenever.</h2>
-      <p>Welcome to Souk Snap, a premier vending solutions provider led by Al Afdal Selling Products By Wellness Within LLC - FZ. Our mission is to transform everyday convenience through cutting-edge vending technology, catering to diverse needs in the UAE and expanding our reach to global markets in the USA and Europe.</p>
+    <!-- ====================================================
+         GIFT WHENEVER SECTION
+    ==================================================== -->
+    <section class="about_bg">
+      <div class="curv_top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="-380" r="400" fill="white" stroke="white"></circle></svg>
+      </div>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12">
+            <div class="about">
+              <div class="heading">Gift
+                <span>
+                  <span>Whenever.</span>
+                  <span>Moments.</span>
+                  <span>Sustainably.</span>
+                  <span>Joy.</span>
+                  <span>Big.</span>
+                </span>
+              </div>
+              <p>Welcome to Souk Snap, a premier vending solutions provider led by Al Afdal Selling Products By Wellness Within LLC - FZ. Our mission is to transform everyday convenience through cutting-edge vending technology, catering to diverse needs in the UAE and expanding our reach to global markets in the USA and Europe.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="curv_bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="-380" r="400" fill="white" stroke="white"></circle></svg>
+      </div>
     </section>
 
     <!-- ====================================================

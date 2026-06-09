@@ -873,26 +873,90 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 /* ============================================================
-   GIFT WHENEVER SECTION
+   GIFT / ABOUT SECTION
    ============================================================ */
-.gift-section {
-  background: var(--dark);
-  padding: 64px 20px;
+.about_bg {
+  padding: 17rem 0;
+  background: #141722;
+  position: relative;
+}
+
+.curv_top,
+.curv_bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  line-height: 0;
+  overflow: hidden;
+}
+
+.curv_top {
+  top: -2px;
+}
+
+.curv_bottom {
+  bottom: -2px;
+  transform: rotate(180deg);
+}
+
+.curv_top svg,
+.curv_bottom svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.about {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 2;
   text-align: center;
+  position: relative;
+  z-index: 9;
 }
 
-.gift-section h2 {
-  font-size: 42px;
-  font-weight: 900;
-  color: white;
-  margin-bottom: 16px;
+.about .heading {
+  line-height: 1.3;
+  color: #fff;
+  font-size: 65px;
+  margin-bottom: 2rem;
 }
 
-.gift-section p {
-  color: rgba(255,255,255,0.7);
-  max-width: 640px;
-  margin: 0 auto 24px;
-  font-size: 15px;
+/* Animated word container */
+.about .heading > span {
+  position: relative;
+  display: inline-block;
+  height: 1.28em;
+  vertical-align: bottom;
+  overflow: hidden;
+  text-align: left;
+  color: #f84464;
+}
+
+/* Hide the pink underline pseudo-element inside .about .heading span */
+.about .heading span::before {
+  display: none;
+}
+
+/* Each animated word */
+.about .heading > span > span {
+  display: block;
+  animation: animateWords 10s infinite ease;
+}
+
+@keyframes animateWords {
+  0%   { transform: translateY(0%);    }
+  25%  { transform: translateY(-100%); }
+  50%  { transform: translateY(-200%); }
+  75%  { transform: translateY(-300%); }
+  100% { transform: translateY(-400%); }
 }
 
 /* ============================================================
