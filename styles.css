@@ -2282,6 +2282,77 @@ textarea.form-control {
 .toast.success { background: #27ae60; }
 .toast.error   { background: #e74c3c; }
 
+/* ── Operator cards (homepage recharge section) ── */
+.operator-card {
+  background: #fff;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 100%;
+}
+.operator-card:hover {
+  border-color: #f84464;
+  box-shadow: 0 8px 24px rgba(248,68,100,0.12);
+  transform: translateY(-3px);
+}
+.operator-logo { margin-bottom: 12px; }
+.operator-logo img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.operator-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+.operator-from {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+.operator-btn {
+  background: #f84464;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+.operator-btn:hover { background: #d63050; }
+
+/* ── Operator pills (recharge page) ── */
+.operator-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: #fff;
+}
+.operator-pill:hover  { border-color: #f84464; }
+.operator-pill.active {
+  border-color: #f84464;
+  background: #fff0f3;
+  color: #f84464;
+  font-weight: 700;
+}
+
 /* Order confirmation code style */
 code {
   font-family: 'Courier New', monospace;

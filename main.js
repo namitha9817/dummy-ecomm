@@ -8,8 +8,8 @@ const state = {
   cartItems: [],
   user: null,
   cartOpen: false,
-  liveProducts: [],        // all Reloadly products (for digital page)
-  liveByCategory: {        // grouped by Reloadly category
+  liveProducts: [],
+  liveByCategory: {
     gaming:        [],
     entertainment: [],
     shopping:      [],
@@ -17,7 +17,10 @@ const state = {
     payment:       []
   },
   liveProductsLoaded: false,
-  accountBalance: null
+  accountBalance: null,
+  airtimeOperators: [],         // UAE mobile operators from Reloadly
+  airtimeLoaded: false,
+  orderHistory: []              // locally tracked orders this session
 };
 
 // ── Static fallback products ─────────────────────────────────
@@ -142,6 +145,21 @@ async function fetchBalance() {
   }
 }
 
+// Fetch UAE mobile operators for recharge section
+async function fetchAirtimeOperators() {
+  try {
+    const data = await api.get('/airtime/operators/AE');
+    state.airtimeOperators = data;
+    state.airtimeLoaded    = true;
+    console.log(`📱 Loaded ${data.length} UAE operators:`, data.map(o => o.name).join(', '));
+    // Refresh recharge section if on home page
+    if (state.currentPage === 'home') updateRechargeSection();
+  } catch (err) {
+    console.warn('⚠️  Airtime operators failed:', err.message);
+    state.airtimeLoaded = true;
+  }
+}
+
 // Lookup product in live OR static array
 function findProduct(id) {
   const numId = Number(id);
@@ -229,6 +247,34 @@ function updateAllHomeSections() {
   patchSection('tickets-static-grid', 'ticket-mob', ticketProds, 'gift');
 
   // Wellness → no Reloadly match, stays static (no patch needed)
+
+  // Crypto → patch dedicated section
+  const cryptoProds = s.crypto.length ? s.crypto : [];
+  if (cryptoProds.length) patchSection('crypto-static-grid', 'crypto-mob', cryptoProds, 'gift');
+}
+
+// Patch just the recharge section when operators load
+function updateRechargeSection() {
+  const grid = document.getElementById('recharge-operators-grid');
+  if (!grid || !state.airtimeOperators.length) return;
+  grid.innerHTML = state.airtimeOperators.map(op => operatorCardHTML(op)).join('');
+}
+
+// Operator card HTML
+function operatorCardHTML(op) {
+  const minLocal = op.localFixedAmounts?.[0] || op.fixedAmounts?.[0] || '—';
+  return `
+    <div class="col-lg-4 col-md-4 col-sm-6">
+      <div class="operator-card" onclick="navigateTo('recharge',{operatorId:${op.operatorId}})">
+        <div class="operator-logo">
+          <img src="${op.logoUrls?.[0] || ''}" alt="${op.name}"
+               onerror="this.src='https://placehold.co/80x80/f0f0f0/999?text=📱'">
+        </div>
+        <div class="operator-name">${op.name.replace(' United Arab Emirates','').replace(' UAE','')}</div>
+        <div class="operator-from">From AED ${minLocal}</div>
+        <button class="operator-btn">Recharge Now</button>
+      </div>
+    </div>`;
 }
 
 // ── DOM Ready ────────────────────────────────────────────────
@@ -240,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Kick off Reloadly data fetch (non-blocking)
   fetchLiveProducts();
   fetchBalance();
+  fetchAirtimeOperators();
 });
 
 // ============================================================
@@ -264,6 +311,8 @@ function navigateTo(page, data = {}) {
     'signin':      renderSignIn,
     'signup':      renderSignUp,
     'cart':        renderCart,
+    'recharge':    () => renderMobileRecharge(data.operatorId),
+    'orders':      renderOrderHistory,
     'gift-detail': () => {
       const product = data.productId !== undefined
         ? findProduct(data.productId)
@@ -292,6 +341,8 @@ function renderNav() {
     { label: "Today's Deal", page: 'deals' },
     { label: 'Supplier',     page: 'supplier' },
     { label: 'Contact Us',   page: 'contact' },
+    { label: '📱 Recharge',  page: 'recharge' },
+    { label: '📋 My Orders', page: 'orders' },
   ];
 
   document.querySelector('.nav-inner').innerHTML = navLinks.map(l =>
@@ -719,6 +770,39 @@ function renderHome() {
       </div>
     </section>
 
+    <!-- ── CRYPTO ────────────────────────────────────── -->
+    ${state.liveByCategory.crypto.length ? `
+    <section class="py-5" style="background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);">
+      <div class="container">
+        <div class="heading_main" style="text-align:center;">
+          <div class="heading" style="color:#fff;">Crypto <span>Vouchers</span></div>
+          <p style="color:rgba(255,255,255,0.6);margin-top:8px;font-size:14px;">Buy crypto vouchers instantly — secure, fast, no wallet needed</p>
+        </div>
+        <div class="row g-4 d-none d-lg-flex" id="crypto-static-grid">
+          ${state.liveByCategory.crypto.slice(0,5).map(p => `<div class="col-lg">${giftRow(p)}</div>`).join('')}
+        </div>
+        <div class="d-lg-none">
+          <div id="crypto-mob" class="owl-carousel owl-theme">
+            ${state.liveByCategory.crypto.map(p => `<div class="item">${giftRow(p)}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </section>` : ''}
+
+    <!-- ── MOBILE RECHARGE ───────────────────────────── -->
+    <section class="py-5" style="background:#f0f4ff;">
+      <div class="container">
+        <div class="heading_main">
+          <div class="heading mb-0">Mobile <span>Recharge</span></div>
+          <p style="color:#666;font-size:14px;margin-top:6px;">Instant top-up for Etisalat, Du & Virgin Mobile UAE</p>
+        </div>
+        ${!state.airtimeLoaded ? '<div class="rl-loading"><span class="rl-spinner"></span> Loading operators…</div>' : ''}
+        <div class="row g-4 justify-content-center" id="recharge-operators-grid">
+          ${state.airtimeOperators.map(op => operatorCardHTML(op)).join('')}
+        </div>
+      </div>
+    </section>
+
     <!-- ── TICKETS / ENTERTAINMENT ──────────────────── -->
     <section class="gray_bg py-5">
       <div class="container">
@@ -1121,6 +1205,21 @@ async function checkout() {
       orders.push(...staticItems.map(i => ({ simulated: true, product: i.name })));
     }
 
+    // ── Save to order history ──────────────────────────────
+    orders.filter(o => o.transactionId).forEach(o => {
+      state.orderHistory.push({
+        type:          'giftcard',
+        transactionId: o.transactionId,
+        productName:   o.product?.productName || 'Gift Card',
+        img:           o.product?.logoUrls?.[0] || '',
+        amount:        o.amount || 0,
+        currency:      o.currencyCode || 'USD',
+        status:        o.status || 'PROCESSING',
+        date:          new Date().toISOString(),
+        _local:        true
+      });
+    });
+
     // ── Success ────────────────────────────────────────────
     state.cartItems = [];
     updateCartBadge();
@@ -1278,6 +1377,365 @@ function renderGiftDetail(product) {
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// MOBILE RECHARGE PAGE
+// ============================================================
+
+function renderMobileRecharge(preselectedOpId) {
+  const main = document.getElementById('main-content');
+  const ops  = state.airtimeOperators;
+
+  main.innerHTML = `
+    <div class="gd-page">
+      <div class="container py-5" style="max-width:720px;">
+        <h1 style="font-weight:700;margin-bottom:4px;">Mobile <span style="color:#f84464;">Recharge</span></h1>
+        <p style="color:#888;margin-bottom:32px;">Instant top-up for UAE numbers — Etisalat, Du & Virgin Mobile</p>
+
+        <div class="gd-info-card">
+
+          <!-- Phone Number -->
+          <div class="gd-section">
+            <h3 class="gd-section-title">Mobile Number</h3>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <select class="gd-input" id="country-code" style="max-width:110px;">
+                <option value="971">🇦🇪 +971</option>
+                <option value="91">🇮🇳 +91</option>
+                <option value="44">🇬🇧 +44</option>
+                <option value="1">🇺🇸 +1</option>
+              </select>
+              <input type="tel" class="gd-input" id="recharge-phone"
+                     placeholder="50 123 4567" style="flex:1;min-width:180px;"
+                     oninput="onPhoneInput(this)"
+                     onblur="detectOperator()">
+              <button class="gd-value-btn active" onclick="detectOperator()" style="white-space:nowrap;">
+                🔍 Detect Operator
+              </button>
+            </div>
+            <!-- Detected operator badge -->
+            <div id="detected-operator" style="margin-top:12px;display:none;">
+              <div class="rl-loading" id="detect-loading" style="display:none;">
+                <span class="rl-spinner"></span> Detecting operator…
+              </div>
+              <div id="detect-result" style="display:flex;align-items:center;gap:12px;padding:12px;background:#f0fff4;border:1.5px solid #27ae60;border-radius:10px;">
+                <img id="detect-logo" src="" alt="" style="width:48px;height:48px;object-fit:contain;border-radius:8px;">
+                <div>
+                  <div style="font-weight:600;" id="detect-name"></div>
+                  <div style="font-size:12px;color:#27ae60;">✅ Operator detected</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Operator selector -->
+          <div class="gd-section">
+            <h3 class="gd-section-title">Select Operator</h3>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;" id="operator-selector">
+              ${ops.length ? ops.map(op => `
+                <div class="operator-pill ${op.operatorId == preselectedOpId ? 'active' : ''}"
+                     id="op-pill-${op.operatorId}"
+                     data-operator-id="${op.operatorId}"
+                     onclick="selectOperator(${op.operatorId})">
+                  <img src="${op.logoUrls?.[0] || ''}" alt="${op.name}"
+                       onerror="this.style.display='none'" style="width:28px;height:28px;object-fit:contain;border-radius:4px;">
+                  ${op.name.replace(' United Arab Emirates','').replace(' UAE','')}
+                </div>`).join('') : '<p style="color:#888;font-size:14px;">Loading operators…</p>'}
+            </div>
+          </div>
+
+          <!-- Amount selector -->
+          <div class="gd-section" id="amount-section" style="${preselectedOpId || ops.length ? '' : 'display:none;'}">
+            <h3 class="gd-section-title">Select Amount <span style="font-size:13px;color:#888;">(AED)</span></h3>
+            <div id="amount-buttons" class="gd-value-options" style="flex-wrap:wrap;">
+              ${preselectedOpId ? renderAmountButtons(preselectedOpId) : (ops[0] ? renderAmountButtons(ops[0].operatorId) : '')}
+            </div>
+          </div>
+
+          <!-- Top-up button -->
+          <button class="gd-cart-btn" id="topup-btn" onclick="placeTopup()">
+            ⚡ Top Up Now
+          </button>
+
+        </div>
+      </div>
+    </div>`;
+
+  // Auto-select first operator if none preselected
+  if (!preselectedOpId && ops.length) selectOperator(ops[0].operatorId);
+}
+
+function renderAmountButtons(operatorId) {
+  const op = state.airtimeOperators.find(o => o.operatorId == operatorId);
+  if (!op) return '';
+  const amounts = op.localFixedAmounts?.length ? op.localFixedAmounts : op.fixedAmounts || [];
+  return amounts.map((a, i) => `
+    <button class="gd-value-btn ${i === 0 ? 'active' : ''}"
+            data-value="${a}" onclick="selectValue(this, ${a})">
+      AED ${a}
+    </button>`).join('');
+}
+
+function selectOperator(operatorId) {
+  // Update pill highlight
+  document.querySelectorAll('.operator-pill').forEach(p => p.classList.remove('active'));
+  const pill = document.getElementById(`op-pill-${operatorId}`);
+  if (pill) pill.classList.add('active');
+
+  // Update amount buttons
+  const amtSection = document.getElementById('amount-section');
+  const amtBtns    = document.getElementById('amount-buttons');
+  if (amtSection) amtSection.style.display = '';
+  if (amtBtns)    amtBtns.innerHTML = renderAmountButtons(operatorId);
+}
+
+let detectTimer = null;
+function onPhoneInput(input) {
+  // Debounce auto-detect — fire 800ms after user stops typing
+  clearTimeout(detectTimer);
+  const val = input.value.replace(/\D/g, '');
+  if (val.length >= 9) {
+    detectTimer = setTimeout(detectOperator, 800);
+  }
+}
+
+async function detectOperator() {
+  const phoneInput = document.getElementById('recharge-phone');
+  const ccSelect   = document.getElementById('country-code');
+  if (!phoneInput) return;
+
+  const local = phoneInput.value.replace(/\D/g, '');
+  if (local.length < 7) return;
+
+  const cc    = ccSelect ? ccSelect.value : '971';
+  const full  = cc + local;
+
+  const loading = document.getElementById('detect-loading');
+  const result  = document.getElementById('detect-result');
+  const wrapper = document.getElementById('detected-operator');
+
+  if (wrapper) wrapper.style.display = 'block';
+  if (loading) loading.style.display = 'flex';
+  if (result)  result.style.display  = 'none';
+
+  try {
+    const data = await api.get(`/airtime/lookup/${full}`);
+    if (loading) loading.style.display = 'none';
+    if (result)  result.style.display  = 'flex';
+
+    const logo = document.getElementById('detect-logo');
+    const name = document.getElementById('detect-name');
+    if (logo) logo.src = data.logoUrls?.[0] || '';
+    if (name) name.textContent = data.name || 'Unknown Operator';
+
+    // Auto-select the detected operator
+    if (data.operatorId) selectOperator(data.operatorId);
+    showToast(`📱 Detected: ${data.name}`);
+  } catch (err) {
+    if (loading) loading.style.display = 'none';
+    if (wrapper) wrapper.style.display = 'none';
+    showToast('Could not detect operator. Please select manually.');
+  }
+}
+
+async function placeTopup() {
+  if (!state.user) {
+    showToast('Please sign in to recharge.');
+    navigateTo('signin');
+    return;
+  }
+
+  const phoneInput = document.getElementById('recharge-phone');
+  const ccSelect   = document.getElementById('country-code');
+  const activeBtn  = document.querySelector('#amount-buttons .gd-value-btn.active');
+  const activePill = document.querySelector('.operator-pill.active');
+
+  const phone      = phoneInput?.value.replace(/\D/g, '');
+  const cc         = ccSelect?.value || '971';
+  const amount     = parseFloat(activeBtn?.dataset.value || 0);
+  const operatorId = activePill ? parseInt(activePill.dataset.operatorId) : null;
+
+  if (!phone || phone.length < 7) { showToast('Please enter a valid phone number.'); return; }
+  if (!operatorId) { showToast('Please select an operator.'); return; }
+  if (!amount)     { showToast('Please select a recharge amount.'); return; }
+
+  const btn = document.getElementById('topup-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Processing…'; }
+
+  try {
+    const result = await api.post('/airtime/topup', {
+      operatorId,
+      amount,
+      useLocalAmount: true,
+      recipientPhone: cc + phone,
+      senderPhone:    cc + phone
+    });
+
+    // Save to order history
+    const op = state.airtimeOperators.find(o => o.operatorId == operatorId);
+    state.orderHistory.push({
+      type:          'airtime',
+      transactionId: result.transactionId,
+      operator:      op?.name || 'Unknown',
+      phone:         '+' + cc + phone,
+      amount,
+      currency:      'AED',
+      status:        result.status || 'COMPLETED',
+      date:          new Date().toISOString()
+    });
+
+    showToast(`✅ AED ${amount} topped up to +${cc}${phone}!`, 'success');
+    renderTopupConfirmation(result, op, cc + phone, amount);
+
+  } catch (err) {
+    showToast(`❌ Top-up failed: ${err.message}`, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '⚡ Top Up Now'; }
+  }
+}
+
+function renderTopupConfirmation(result, op, phone, amount) {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <div class="cart-page">
+      <div class="container py-5" style="max-width:600px;">
+        <div class="order-summary-card" style="text-align:center;padding:48px 32px;">
+          <div style="font-size:64px;margin-bottom:16px;">✅</div>
+          <h2 style="font-weight:700;margin-bottom:8px;">Recharge Successful!</h2>
+          <p style="color:#666;margin-bottom:24px;">
+            <strong>AED ${amount}</strong> topped up to <strong>+${phone}</strong><br>
+            via <strong>${op?.name || 'Operator'}</strong>
+          </p>
+          <div class="order-row-item"><span>Transaction ID</span><strong>${result.transactionId || '—'}</strong></div>
+          <div class="order-row-item"><span>Status</span><strong style="color:#27ae60;">${result.status || 'COMPLETED'}</strong></div>
+          <div class="order-divider"></div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;">
+            <button class="gd-cart-btn" style="max-width:180px;" onclick="navigateTo('recharge')">Recharge Again</button>
+            <button class="gd-cart-btn" style="max-width:180px;background:#333;" onclick="navigateTo('orders')">My Orders</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// ORDER HISTORY PAGE
+// ============================================================
+
+async function renderOrderHistory() {
+  const main = document.getElementById('main-content');
+
+  // Show loading state first
+  main.innerHTML = `
+    <div class="cart-page">
+      <div class="container py-5">
+        <h1 style="font-weight:700;margin-bottom:4px;">My <span style="color:#f84464;">Orders</span></h1>
+        <p style="color:#888;margin-bottom:32px;">Your recent gift card & recharge orders</p>
+        <div class="rl-loading" style="justify-content:center;padding:40px;">
+          <span class="rl-spinner"></span> Fetching order history from Reloadly…
+        </div>
+      </div>
+    </div>`;
+
+  // Fetch from both APIs in parallel
+  let gcOrders   = [];
+  let atOrders   = [];
+
+  try {
+    const [gcData, atData] = await Promise.allSettled([
+      api.get('/giftcards/transactions?size=20'),
+      api.get('/airtime/transactions?size=20')
+    ]);
+
+    if (gcData.status === 'fulfilled') {
+      gcOrders = (gcData.value.content || []).map(o => ({
+        type:          'giftcard',
+        transactionId: o.transactionId,
+        productName:   o.product?.productName || 'Gift Card',
+        img:           o.product?.logoUrls?.[0] || '',
+        amount:        o.amount || 0,
+        currency:      o.currencyCode || 'USD',
+        status:        o.status,
+        date:          o.transactionDate || o.date
+      }));
+    }
+
+    if (atData.status === 'fulfilled') {
+      atOrders = (atData.value.content || []).map(o => ({
+        type:          'airtime',
+        transactionId: o.transactionId,
+        productName:   `${o.operatorName || 'Mobile'} — ${o.recipientPhone || ''}`,
+        img:           '',
+        amount:        o.requestedAmount || o.deliveredAmount || 0,
+        currency:      o.requestedAmountCurrencyCode || 'USD',
+        status:        o.status,
+        date:          o.transactionDate
+      }));
+    }
+  } catch (err) {
+    console.warn('Order history fetch error:', err.message);
+  }
+
+  // Merge API orders with local session history
+  const localOrders = state.orderHistory.map(o => ({ ...o, _local: true }));
+  const allOrders   = [...localOrders, ...gcOrders, ...atOrders];
+
+  main.innerHTML = `
+    <div class="cart-page">
+      <div class="container py-5">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+          <div>
+            <h1 style="font-weight:700;margin-bottom:4px;">My <span style="color:#f84464;">Orders</span></h1>
+            <p style="color:#888;margin:0;">${allOrders.length} order${allOrders.length !== 1 ? 's' : ''} found</p>
+          </div>
+          <button class="gd-cart-btn" style="max-width:160px;" onclick="navigateTo('home')">← Back to Shop</button>
+        </div>
+
+        ${allOrders.length === 0 ? `
+          <div style="text-align:center;padding:80px 20px;color:#aaa;">
+            <div style="font-size:56px;margin-bottom:16px;">📋</div>
+            <p style="font-size:16px;">No orders yet. Start shopping!</p>
+            <button class="gd-cart-btn" style="max-width:200px;margin-top:20px;" onclick="navigateTo('digital')">Browse Gift Cards</button>
+          </div>
+        ` : `
+          <div class="row g-3">
+            ${allOrders.map(o => orderRowHTML(o)).join('')}
+          </div>
+        `}
+      </div>
+    </div>`;
+}
+
+function orderRowHTML(o) {
+  const icon      = o.type === 'airtime' ? '📱' : '🎁';
+  const typeBadge = o.type === 'airtime' ? 'Recharge' : 'Gift Card';
+  const badgeBg   = o.type === 'airtime' ? '#3498db' : '#f84464';
+  const statusColor = (o.status || '').includes('COMPLET') || (o.status || '').includes('SUCCESS')
+    ? '#27ae60' : '#e67e22';
+  const dateStr = o.date ? new Date(o.date).toLocaleDateString('en-AE', { day:'numeric', month:'short', year:'numeric' }) : '—';
+
+  return `
+    <div class="col-12">
+      <div class="cart-item-card" style="align-items:flex-start;gap:16px;">
+        <div style="font-size:36px;line-height:1;min-width:44px;text-align:center;">
+          ${o.img ? `<img src="${o.img}" style="width:44px;height:44px;object-fit:contain;border-radius:6px;" onerror="this.outerHTML='${icon}'">` : icon}
+        </div>
+        <div class="cart-item-info" style="flex:1;">
+          <div class="cart-item-name">${o.productName || '—'}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;align-items:center;">
+            <span style="background:${badgeBg};color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">${typeBadge}</span>
+            ${o._local ? '<span style="background:#f39c12;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">This Session</span>' : ''}
+            <span style="color:${statusColor};font-size:12px;font-weight:600;">● ${o.status || 'PROCESSING'}</span>
+          </div>
+          <div style="font-size:12px;color:#aaa;margin-top:4px;">
+            ${o.transactionId ? `TX: ${o.transactionId}` : ''} ${dateStr ? '· ' + dateStr : ''}
+          </div>
+        </div>
+        <div style="text-align:right;min-width:80px;">
+          <div class="cart-aed" style="font-size:11px;">${o.currency || 'AED'}</div>
+          <div class="cart-price-num">${parseFloat(o.amount || 0).toFixed(2)}</div>
         </div>
       </div>
     </div>`;

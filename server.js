@@ -54,6 +54,37 @@ function rlHeaders(token) {
   };
 }
 
+// ── Airtime / Topup API ──────────────────────────────────────
+const AIRTIME_BASE = SANDBOX
+  ? 'https://topups-sandbox.reloadly.com'
+  : 'https://topups.reloadly.com';
+
+let airtimeTokenCache = { value: null, expiresAt: 0 };
+
+async function getAirtimeToken() {
+  if (airtimeTokenCache.value && Date.now() < airtimeTokenCache.expiresAt) {
+    return airtimeTokenCache.value;
+  }
+  console.log('🔑 Fetching Airtime access token…');
+  const { data } = await axios.post(AUTH_URL, {
+    client_id:     CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    grant_type:    'client_credentials',
+    audience:      AIRTIME_BASE
+  });
+  airtimeTokenCache.value     = data.access_token;
+  airtimeTokenCache.expiresAt = Date.now() + (data.expires_in - 60) * 1000;
+  console.log('✅ Airtime token acquired');
+  return airtimeTokenCache.value;
+}
+
+function atHeaders(token) {
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/com.reloadly.topups-v1+json'
+  };
+}
+
 // ── Error helper ────────────────────────────────────────────
 function handleError(res, err, label) {
   const msg  = err.response?.data?.message || err.response?.data || err.message;
@@ -171,6 +202,103 @@ app.get('/api/giftcards/redeem/:transactionId', async (req, res) => {
     );
     res.json(data);
   } catch (err) { handleError(res, err, 'redeem'); }
+});
+
+// ── Gift card order history ───────────────────────────────────
+app.get('/api/giftcards/transactions', async (req, res) => {
+  try {
+    const token    = await getToken();
+    const { data } = await axios.get(`${BASE_URL}/reports/transactions`, {
+      headers: rlHeaders(token),
+      params: { page: req.query.page || 1, size: req.query.size || 20 }
+    });
+    res.json(data);
+  } catch (err) {
+    // Sandbox may not expose this endpoint — return empty list gracefully
+    console.warn('GC transactions not available:', err.response?.status);
+    res.json({ content: [], totalElements: 0 });
+  }
+});
+
+// ============================================================
+// AIRTIME / MOBILE RECHARGE ROUTES
+// ============================================================
+
+// ── UAE operators ─────────────────────────────────────────────
+app.get('/api/airtime/operators/:country', async (req, res) => {
+  try {
+    const token    = await getAirtimeToken();
+    const { data } = await axios.get(
+      `${AIRTIME_BASE}/operators/countries/${req.params.country.toUpperCase()}`,
+      { headers: atHeaders(token) }
+    );
+    res.json(data);
+  } catch (err) { handleError(res, err, 'airtime-operators'); }
+});
+
+// ── Auto-detect operator from phone number ────────────────────
+// phone should be full international format e.g. 971501234567
+app.get('/api/airtime/lookup/:phone', async (req, res) => {
+  try {
+    const token    = await getAirtimeToken();
+    const { data } = await axios.get(
+      `${AIRTIME_BASE}/operators/auto-detect/phone/${req.params.phone}/countries/AE`,
+      { headers: atHeaders(token) }
+    );
+    res.json(data);
+  } catch (err) { handleError(res, err, 'number-lookup'); }
+});
+
+// ── Place airtime top-up ──────────────────────────────────────
+// Body: { operatorId, amount, useLocalAmount, recipientPhone, senderPhone }
+app.post('/api/airtime/topup', async (req, res) => {
+  try {
+    const token = await getAirtimeToken();
+    const payload = {
+      operatorId:      req.body.operatorId,
+      amount:          req.body.amount,
+      useLocalAmount:  req.body.useLocalAmount !== false,   // default true (AED)
+      customIdentifier: `souksnap-${Date.now()}`,
+      recipientPhone: {
+        countryCode: 'AE',
+        number:      req.body.recipientPhone
+      },
+      senderPhone: {
+        countryCode: 'AE',
+        number:      req.body.senderPhone || req.body.recipientPhone
+      }
+    };
+    console.log('📱 Top-up payload:', JSON.stringify(payload, null, 2));
+    const { data } = await axios.post(`${AIRTIME_BASE}/topups`, payload, {
+      headers: { ...atHeaders(token), 'Content-Type': 'application/json' }
+    });
+    console.log('✅ Top-up placed, transactionId:', data.transactionId);
+    res.json(data);
+  } catch (err) { handleError(res, err, 'airtime-topup'); }
+});
+
+// ── Airtime transaction history ───────────────────────────────
+app.get('/api/airtime/transactions', async (req, res) => {
+  try {
+    const token    = await getAirtimeToken();
+    const { data } = await axios.get(`${AIRTIME_BASE}/topups/reports/transactions`, {
+      headers: atHeaders(token),
+      params: { page: req.query.page || 1, size: req.query.size || 20 }
+    });
+    res.json(data);
+  } catch (err) { handleError(res, err, 'airtime-transactions'); }
+});
+
+// ── Single airtime transaction ────────────────────────────────
+app.get('/api/airtime/transactions/:id', async (req, res) => {
+  try {
+    const token    = await getAirtimeToken();
+    const { data } = await axios.get(
+      `${AIRTIME_BASE}/topups/reports/transactions/${req.params.id}`,
+      { headers: atHeaders(token) }
+    );
+    res.json(data);
+  } catch (err) { handleError(res, err, 'airtime-transaction-detail'); }
 });
 
 // ── Fallback: serve index.html for SPA ──────────────────────
