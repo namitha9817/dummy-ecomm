@@ -94,7 +94,7 @@ const products = [
 // RELOADLY API LAYER
 // ============================================================
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = 'https://dummy-ecomm.onrender.com/api';
 
 const api = {
   async get(path) {
