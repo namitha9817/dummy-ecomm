@@ -294,7 +294,7 @@ function renderHome() {
     <section class="section-dark">
       <div class="section-inner">
         <div class="section-header">
-          <h2 class="section-title" style="color:white;">What's <span>Trending</span> Today</h2>
+          <h2 class="section-title" style="color:white;">What's <s>Trending</s> Today</h2>
         </div>
       </div>
     </section>
@@ -303,7 +303,7 @@ function renderHome() {
     <section class="section" style="background: var(--bg-light);">
       <div class="section-inner">
         <div class="section-header">
-          <h2 class="section-title">Jet Ski, <span>Deals</span></h2>
+          <h2 class="section-title">Jet Ski, <s>Deals</s></h2>
         </div>
         <div class="products-grid">
           ${jetskiItems.map(p => productCardHTML(p)).join('')}
@@ -313,12 +313,17 @@ function renderHome() {
 
     <!-- BANNER -->
     <div class="banner-ad">
+      <button class="banner-arrow left">&#8249;</button>
       <div class="banner-ad-inner">
         <div>
-          <div class="banner-ad-tag">🎮 TIMEZONE</div>
-          <h2>GIVE THE<br>GIFT OF FUN</h2>
+          <h2>GIVE THE<br>GIFT<br>OF FUN</h2>
+        </div>
+        <div style="background:rgba(255,255,255,0.12);border-radius:12px;padding:16px 24px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.7);text-transform:uppercase;margin-bottom:4px;">TIMEZONE</div>
+          <div style="font-size:28px;">🎮</div>
         </div>
       </div>
+      <button class="banner-arrow right">&#8250;</button>
     </div>
 
     <!-- GETAWAYS -->
@@ -378,22 +383,36 @@ function renderHome() {
         <div class="section-header">
           <h2 class="section-title">What's <span>Waiting for You</span></h2>
         </div>
-        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:24px;margin-top:24px;">
-          ${[
-            { icon: '💳', label: 'Digital Cards' },
-            { icon: '🎟️', label: 'Tickets' },
-            { icon: '🏝️', label: 'Getaways' },
-            { icon: '🎮', label: 'Kids' },
-            { icon: '🛥️', label: 'Jet Ski' },
-            { icon: '💆', label: 'Wellness' },
-            { icon: '🎁', label: 'Black Friday' },
-            { icon: '🌟', label: 'Pool Party' },
-          ].map(c => `
-            <div style="text-align:center;cursor:pointer;" onclick="navigateTo('digital')">
-              <div style="width:64px;height:64px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 8px;">${c.icon}</div>
-              <div style="font-size:12px;font-weight:600;color:var(--text-muted);">${c.label}</div>
-            </div>
-          `).join('')}
+        <div class="waiting-grid">
+          <div class="waiting-side">
+            ${[
+              { icon: '💳', label: 'Digital Cards', page: 'digital' },
+              { icon: '🎟️', label: 'Tickets', page: 'digital' },
+              { icon: '🛥️', label: 'Jet Ski', page: 'jetski' },
+              { icon: '💆', label: 'Wellness', page: 'wellness' },
+            ].map(c => `
+              <div class="waiting-icon-card" onclick="navigateTo('${c.page}')">
+                <div class="waiting-icon-img">${c.icon}</div>
+                <div class="waiting-icon-label">${c.label}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="waiting-phone">
+            <img class="waiting-phone-img" src="https://placehold.co/140x280/1a1a2e/ffffff?text=%F0%9F%93%B1" alt="App">
+          </div>
+          <div class="waiting-side">
+            ${[
+              { icon: '🏝️', label: 'Getaways', page: 'getaways' },
+              { icon: '🎮', label: 'Kids', page: 'digital' },
+              { icon: '🎁', label: 'Black Friday', page: 'blackfriday' },
+              { icon: '🌊', label: 'Pool Party', page: 'digital' },
+            ].map(c => `
+              <div class="waiting-icon-card" onclick="navigateTo('${c.page}')">
+                <div class="waiting-icon-img">${c.icon}</div>
+                <div class="waiting-icon-label">${c.label}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
