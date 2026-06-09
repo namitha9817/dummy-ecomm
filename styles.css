@@ -989,6 +989,10 @@ button { cursor: pointer; border: none; background: none; }
   margin-bottom: 20px;
 }
 
+.footer-section ul {
+  padding: 0px;
+}
+
 .footer-section ul li {
   margin-bottom: 10px;
 }
