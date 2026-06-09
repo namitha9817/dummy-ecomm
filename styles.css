@@ -2644,3 +2644,10 @@ body.menu-open::after {
    HIDE OWL CAROUSEL DOTS GLOBALLY
    ============================================================ */
 .owl-dots { display: none !important; }
+
+/* ============================================================
+   RESPONSIVE — ≤450px headings
+   ============================================================ */
+@media (max-width: 450px) {
+  .heading { font-size: 44px; }
+}
